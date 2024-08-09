@@ -1,0 +1,72 @@
+Discussions sur l'évaluation (cf. discours de mop) :
+====================================================
+
+(1) Point de comparaison identifié avec "shielding collaborative learning", le seul papier à notre connaissance à faire de la cross-evaluation :
+
+    a. comparer avec LEUR méthode sur LEUR dataset : 
+	    - Avantage comparaison à un existant utilisant une méthode proche (cross évaluation) : facilite l'évaluation de nos travaux pour un reviewer pressé.  
+	    - Inconvénient répartition par label non adapté pour l'apprentissage non suppervisé nécessaire dans notre cas d'usage
+	    - réimplémentation plus lourde (nous + eux)
+
+    b. Comparer avec LEUR méthode sur NOTRE dataset : 
+        - Comparaison de notre méthode avec une méthode proche de la litérature
+        - Permet d'avoir un data set plus adapté
+        - Pas de rejeu de la recherche dans le sens ou les résulats vont varier avec le changement de dataset
+        - réimplémentation "juste" de leur méthode sur nos données
+        
+(2) Point de comparaison identifié "Generalizing intrusion detection for heterogeneous networks: A stacked-unsupervised federated learning approach" :
+    Points positifs : 
+        - Cas d'usage similaire (unsupervised learning sur data set hétérogène)
+        - Data set idéal 
+        - Code dispo, a priori
+        - Baseline de comparaison rigoureuse via reproducibilité 
+        
+    Point négatif :  
+        - Méthodologie différente à la notre (pas de cross évaluation, ni clustering, ni réputation)
+        
+
+Est-ce qu'on veut plutôt se compararer à un papier qui utilise des outils similaires à ceux qu'on propose ou qui a un objectif similaire à celui qu'on propose ? 
+
+-> idée pour l'instant, on exclue 1a, qui donne trop de boulot. Ensuite avoir la baseline pour la comparaison de base, plus implémentation de méthodes de la littérature (cf.  1b) 
+
+
+Clustering :
+====================================================
+
+
+(1) métriques disponibles
+    - matrice d'évaluations : Scores sur le modèle $w_i$ par ses pairs
+    - $\delta ( w_k^{t-1} , w_i^t ) $
+    - $\delta ( w_i^t , w_i^{t-1} ) $
+    - écart à la moyenne des distances : $ | \delta ( w_k^t , w_i^t ) - \overline{ \delta ( w_k^t , W_k^t ) } | $
+    
+    -> métriques historisées sur $h$ rounds qui nous permettent de regarder l'évolution dans le temps
+    
+    - $\delta$ n'est pas défini. Distances / Similarité considérées :
+        - L2-norm
+        - Cosine similarity
+        - L1-norm / Manhattan distance
+
+    - Probablement inadaptée car notre approche se base sur des cluster et des cross évaluations pas directement à disposition de l'acteur centralisé mais nénanmoins utilisé dans \cite{wang_reputation-enabled_2021} donc laissé pour comparaison : $\delta (w_k^~t , w_i^t-1 )$, $w_k^~t$ -> modèle local temporaire caluclé à partir des clusters et des poids du round -1
+
+(2) contraintes (tailles de clusters, ...)
+    - il ne doit pas y avoir que des clusters de une personne (sinon le federated learning n'a pas d'intérêt)
+    - l'auto-évaluation d'un participant ne doit pas influer sur la formation des clusters
+    - On ne connait pas le nombre optimal de clusters à l'avance. 
+    - 
+
+(3) algos envisagés ou repérés dans la littérature
+    - K-NN (with fixed $k$ so not very interesting)
+    - K-mean with dynamic opportunistic cluster split / merge based on L2-norm \cite{chen_zero_2021}. Cluster split and merge based on : "Robust K-means algorithm with automatically splitting and merging clusters and its applications for surveillance data"
+    - Hierarchical clustering \cite{briggs_federated_2020}, hierarchical clustering seem to be a  good fit for usecase where the number of cluster is unknown. 
+    
+
+(4) objectifs (eg. faire sortir les utilisateurs malveillants)
+
+    - Le clustering à pour but de regrouper des groupes de participants suffisaments similaires à partir des métriques identifiées. Ces clusters sont ensuite transmis au système de réputation qui, à partir des évaluations passées faites par les participants du cluster sur les modèles locaux des autres participants du cluster, va calculer les poids de l'aggrégation d'un modèle global propre au cluster. 
+        -> clusering => heterogeneity
+        -> weighting => mitigation de malveillance / négligeance
+        
+    - adaptation "dynamique" round par round, eg. fusion / fission de clusters
+
+ACP : Analyse en composante principale, compare quel sont les composantes principales. 

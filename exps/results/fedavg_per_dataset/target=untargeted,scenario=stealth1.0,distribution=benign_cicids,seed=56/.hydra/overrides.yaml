@@ -1,0 +1,5 @@
+- archi=fedavg
+- scenario/distribution=/single_cluster/benign_cicids
+- +scenario/target=untargeted
+- xp.seed=56
+- fl.drop_class=False

@@ -1,0 +1,104 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Trust-FIDS",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/exps",
+            "module": "trustfids",
+            "args": [
+                "--config-name",
+                "config_test",
+                "hydra.verbose=[trustfids,flwr,ray]",
+            ],
+            "subProcess": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Trust-FIDS (inspect foreign code)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/exps",
+            "module": "trustfids",
+            "args": [
+                "--config-name",
+                "config_test",
+                "hydra.verbose=[trustfids,flwr,ray]",
+            ],
+            "subProcess": true,
+            "justMyCode": false
+        },
+        {
+            "name": "Python: Run file",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}/exps",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Trust-Fids pathological non-IID, single dataset ",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/exps",
+            "module": "trustfids",
+            "args": [
+                "+scenario/target=untargeted",
+                "scenario/distribution=lone",
+                "scenario/attacker=stealth0.8",
+                "xp.seed=89"
+            ],
+            "subProcess": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Trust-Fids lmbd = 0, lone untargeted stealth ",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/exps",
+            "module": "trustfids",
+            "args": [
+                "scenario/target=untargeted",
+                "scenario/distribution=lone",
+                "scenario/attacker=stealth",
+                "archi.strategy.reputation_system.lmbd=0",
+            ],
+            "subProcess": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Run file (inspect foreign code)",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}/exps",
+            "justMyCode": false
+        },
+        {
+            "name": "Python : attacher à l’aide de l’ID de processus",
+            "type": "python",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
+            "justMyCode": true,
+        },
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "tf_baseline",
+            "description": "Baseline to run",
+            "options": [
+                "trustfids_ae",
+                "trustfids_norep",
+                "trustfids_granular",
+                "trustfids_noclust",
+                "trustfids_perfectclust",
+                "fedavg_ae",
+                "bertoli",
+                "foolsgold_ae",
+            ],
+            "default": "trustfids_ae"
+        },
+    ]
+}

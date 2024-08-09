@@ -1,0 +1,82 @@
+fl:
+  num_clients: 10
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 512
+  silos:
+  - path: ../data/sampled/botiot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/cicids_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/nb15_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/toniot_sampled.csv.gz
+    type: benign
+xp:
+  seed: 1138
+  save: false
+hardware:
+  cpu_headroom: 0.1
+archi:
+  server:
+    _target_: trustfids.server.server.XevalServer
+  strategy:
+    _target_: trustfids.server.strategy.SimFedXeval
+    num_epochs: ${fl.num_epochs}
+    batch_size: ${fl.batch_size}
+    initial_parameters: null
+    clustering_metric: accuracy
+    reputation_metric: f1
+    evaluation_metric: f1
+    clustering_kwargs:
+      input_type: xevals
+      threshold_type: mean
+      alpha: 0.8
+      distance_type: euclidean
+    reputation_system:
+      _target_: trustfids.reputation.reput.DirichletReputationEnvironment
+      class_nb: 1000
+  client:
+    _target_: trustfids.client.base.XevalClient
+    self_evaluation: true
+    learner: ${learner}
+  name: Trust-FIDS
+  description: "This configuration of implements Trust-FIDS, with the appropriate\
+    \ components:\n  * Cross-evaluation enabled server and client\n  * The cross-evaluation\
+    \ strategy\n\nThis configuration can then be used with any combination of scenario,\
+    \ learner, and\ndataset. \n"
+learner:
+  _target_: trustfids.client.learners.MLPPopoola
+dataset:
+  load_siloed_data:
+    _target_: trustfids.dataset.nfv2.load_siloed_data
+    seed: ${xp.seed}
+    only_benign: false
+baseline:
+  name: Trust-FIDS MLP
+  description: 'This baseline implements the entire Trust-FIDS stack, including the
+    reputation
+
+    system, on top of the AE client. The local MLP is taken from Popoola''s work (see
+
+    popoola.yaml).
+
+
+    See the settings in archi/trustfids.yaml, and their respective configuration files
+
+    or details on the available options.
+
+    '
+strategy:
+  evaluation_metric: f1
+scenario:
+  name: Benign data
+  datasize: sampled
+  description: 'This scenario uses the same data as the full benign scenario, but
+    only a
+
+    fraction of it. This is useful for testing the performance of the system
+
+    on a smaller dataset.
+
+    '

@@ -1,0 +1,30 @@
+\section{Conclusion}\label{sec:conclu}
+% 1 sentence : name of what we did + a general overview. 
+In this paper, we introduced \thecontrib, a federated learning architecture that effectively mitigates poisoning attacks, even with heterogeneous data-distributions.
+% 1-2 sentences : Assumptions made for the work. Could we validate them ?
+Our approach is built on the assumption that heterogeneous participants can be grouped based on the similarity between their data distribution.
+% Assumption : In 
+ % that share similarities, we have chosen to group participants together.
+% Methodo 
+To test this assumption, we instantiated four groups of clients based on four different public datasets in a way that each client has data coming from a single dataset. 
+% 3-4 sentences main results
+We introduced a cross-evaluation scheme that allows participants to estimate their pairwise similarities. 
+
+Using the similarity between the participants' evaluations, we manage to rebuild the initial participant distribution using hierarchical clustering. 
+We further designed a reputation system based on the cross-evaluation results.
+Our reputation system uses the perceived similarity of participants and their cumulated past results to give a score to each participant inside a cluster.     
+We show that this reputation system can distinguish attackers from benign participants as long as attackers remain the minority in a cluster. 
+% By accentuating the reputation differences, we obtain aggregation weights that are used to build a different model for each cluster. 
+Our process greatly reduces the impact of attackers. 
+We compared our work to \texttt{FoolsGold} and \texttt{FedAvg}, which highlighted the versatility of \thecontrib.
+% As future works, noting that \thecontrib and \texttt{FoolsGold} produce complementary results, we would like to investigate whether an approach that opportunistically switch between the two is possible. 
+%
+% mop : I would rather write something like "The next step for continuing our work is..."
+%
+% mop : However, the risk is always: why didn't you do it yet? Why should we accept such preliminary work? Therefore it is good to emphasize that the result is already great. However, this would be a follow-up point for other researchers.
+% mop: edited it accordingly.
+%
+%As possible next steps into the direction of the presented research, introducing more heterogeneity inside the different group of participants by dropping one or multiple classes of attacks could be an interesting next step. 
+
+Finally, overcoming \thecontrib's limited scalability paves the way towards interesting research directions, as trust is also a requirement in cross-device settings.
+Moreover, being able to remove the central server dependency is a key step towards a truly decentralized, trustworthy, and privacy-preserving \gls{cids}.

@@ -1,0 +1,184 @@
+% main.tex
+% 
+
+%\documentclass[conference]{IEEEtran}
+\documentclass[acmtog]{acmart}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               PACKAGES AND OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Use \PassOptionsToPackage here to pass options to packages already included in 
+% default.sty.
+
+\usepackage[]{default}
+
+%% Glossary
+\usepackage[acronym]{glossaries}
+\glsdisablehyper % disable the hyperlinks
+\makenoidxglossaries
+\input{glossary}
+
+%% Bibliography
+\usepackage[backend=biber,style=ieee,natbib,mincitenames=1,maxcitenames=1,uniquelist]{biblatex}
+\addbibresource{bibliography.bib}
+\addbibresource{trust-fids.bib}
+\addbibresource{bib-pm.bib}
+\addbibresource{bib-leo.bib}
+%no month
+\AtEveryBibitem{\clearfield{month}}
+%no pages
+\AtEveryBibitem{\clearfield{pages}}
+%no editor
+\AtEveryBibitem{\clearfield{editor}}
+\AtEveryBibitem{\clearfield{publisher}}
+\AtEveryBibitem{\clearfield{address}}
+\AtEveryBibitem{\clearfield{series}}
+\AtEveryBibitem{\clearfield{isbn}}
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryBibitem{\clearfield{note}}
+\AtEveryBibitem{\clearfield{volume}}
+\AtEveryBibitem{\clearfield{number}}
+\AtEveryBibitem{\clearfield{location}}
+
+\AtEveryBibitem{\clearfield{eprinttype}}
+\AtEveryBibitem{\clearfield{eprint}}
+
+%lien DOI ou URL si disponible
+\newbibmacro{string+doi}[1]{%
+  \iffieldundef{doi}{%
+  	\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}}{\href{http://dx.doi.org/\thefield{doi}}{#1}}}
+
+%sur le titre, en couleur
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished,misc,techreport]
+  {title}{\usebibmacro{string+doi}{#1\addperiod}}
+\AtEveryBibitem{\clearfield{doi}}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocodex}
+
+% Tables
+\usepackage{tabularx}
+
+%Images / svg
+\usepackage{svg}
+
+% plot 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%tikz
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Notation macros
+\input{macros}
+% \input{macro_prop.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Title page and metadata
+% ------------------------------------------------------------------------------
+
+\begin{document}
+% Title creation:
+% ### Mandatory
+% Detection intrusion
+% Federated learning 
+% Trust/Reputation 
+
+% ### Nice to have 
+% Cross evaluation ?  	
+% Clustering ? 
+% non-IID ?
+\title{Filtering Contributions in Federated Learning for Intrusion Detection: a Cross-evaluation approach for Reputation-aware Model Weighting}
+% Title for final publication?
+% - Trustworthiness assessment of clients in highly heterogeneous Federated Learning settings for Intrusion Detection
+
+\author{
+\IEEEauthorblockN{L\'eo Lavaur}
+\IEEEauthorblockA{\textit{IMT Atlantique, IRISA, Cyber CNI} \\
+leo.lavaur@imt-atlantique.fr}
+\and
+\IEEEauthorblockN{Pierre-Marie Lechevalier}
+\IEEEauthorblockA{\textit{IMT Atlantique, IRISA} \\
+pierre-marie.lechevalier@imt-atlantique.fr}
+%\linebreakand % Add a line break between authors
+%\IEEEauthorblockN{Third author}
+%\IEEEauthorblockA{\textit{Other lab} \\
+%third.author@not.gmail.please}
+% -- add as meany authors as you need
+% \and
+% \IEEEauthorblockN{Fabien Autrel}
+% \IEEEauthorblockA{\textit{IMT Atlantique, IRISA} \\
+% fabien.autrel@imt-atlantique.fr}
+}
+
+\maketitle
+
+% remove for submission ---
+\thispagestyle{plain}
+\pagestyle{plain}
+% -------------------------
+
+\begin{abstract}
+    % (blue) Basic introduction to the field (one or two sentences): 
+    % Intrusion detection / collaboration ?
+    % To face distributed attack campaigns, collaborative \glspl{ids} share knowledge acquired on actors to improve detection strategies.
+    \Glspl{cids} improve discovery by allowing organizations with diverse information systems to share information.
+    %TODO de LN : IDS ne devrait il pas etre défini ?
+    
+    %TODO de LN : diverse je remplaçerais par various 
+    % Possible d'éliminer le double, synonyme d'information système ? Ou bien qualification d'information qui est large en intel par exemple ?
+    % (pink) More detailed background (Two or three s)
+    %TODO de LN : Y a un rpblème avec les accronymes, en français on met bien des majuscules pas en anglais donc ici par exemple Federated a une majucule car premier mot de la phrase mais pas Learning.
+    \Gls{fl} promises to distribute the \gls{ml} task among several actors and allow the creation of a global intrusion detection model, benefiting from the experience and the observations of all participants.
+    In this context, negligent participants might produce negative updates that degrade the global model, and such updates should be discarded.
+    % (yellow) General problem (1 s)
+    However, as participants in \gls{cids} are inherently heterogeneous, it is hard to know whether an update that differs from the norm is the result of a neglectful participant or the result of a legitimate participant with a different data set.
+    %TODO de LN : je couperai bien cette phrase que je trouve bien longue et lourde.
+    % (cyan) Summarizing the main results (one s)
+    % -> No result yet
+    % (green) summarizing how the result/approach compares with pas work (2 or 3 s)
+    While existing works often assess update quality through similarity measures against a single source of truth, this approach can’t be applied to our \gls{niid} use case, where no single model can encompass the participants’ diversity.
+    To tackle this issue, we regroup similar participants together using hierarchical clustering, and evaluate participants using a reputation system that monitors the quality of updates over time.
+    Finally, for each cluster, we aggregate a different shared model, weighting participants contribution to the model based on their trustworthiness.
+    %TODO de LN : contribution du coup y a un s ou pas j'ai un doute, chque participant a une contribution ? mais y a plusieurs participants du coup je ne sais pas.
+    Both the clustering and the reputation systems are based on feedback obtained through participants, which cross-evaluate each other.
+    This cross-evaluation, enabled by the relatively small number of participants in cross silo strategies, exclude the need for a single source of truth and aim to account for participants diversity.     
+    % (purple) Put the results in a more general context (1 or 2)
+    In this work, we propose an approach that improves the weighting in FL model aggregation, by clustering participants and building trust in their model updates through self-organized reputation mechanisms.
+    % (red) optional perspective (2 or 3)
+\end{abstract}
+
+
+\begin{IEEEkeywords}
+nice keyword, relevant keyword, catchy keyword
+\end{IEEEkeywords}
+
+\defaultresetgls % reset all previous glossary calls
+
+% Sections
+% ------------------------------------------------------------------------------
+
+\input{sections/10_introduction.tex}
+\input{sections/20_background.tex}
+\input{sections/30_problem.tex}
+\input{sections/40_archi.tex}
+\input{sections/50_eval.tex}
+\input{sections/60_soa.tex}
+\input{sections/90_conclusion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \defaultprintbib % print the bibliography
+
+\printbibliography
+
+\end{document}

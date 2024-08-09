@@ -1,0 +1,182 @@
+\section*{Appendix\label{sec:annexes}}
+
+%\vspace{-1cm}
+%\begin{table}[H]
+%    \centering
+%    \caption{\label{tbl:notations}Notations}
+%    % As a general rule:
+%    % 1) sets and sequences shall be defined in uppercase
+%    % 2) samples or individual entities shall be expressed in lowercase
+%    \begin{tabularx}{\columnwidth}{l|X}
+%        \toprule % ---------------------------------
+%        \textbf{Notation}  & \textbf{Description} \\
+%        \midrule % ---------------------------------
+%        $\p$                                                                & Participant $i$ \\
+%        $\d$                                                                & Local dataset of participant $p_i$ \\
+%        $D = \bigcup_{i=1}^n d_i$                                           & Union of all local datasets \\
+%        $n$                                                                 & Number of participants \\
+%        $P = \{\p\}_{i \in \llbracket 1,n \rrbracket}$                      & Set of all participants \\
+%                  
+%        $\c$                                                                & Cluster $k$ at round $r$\\
+%        $\center$                                                           & Cluster $k$ center at round $r$\\
+%        $m^r$                                                               & Number of clusters at round $r$ \\
+%        $\C = \{ C^r_i\}_{i \in \llbracket 1 ,m^r \rrbracket}$              & Set of clusters at round $r$ \\
+%        $\dist$                                                             & Distance from cluster $k$ and $\ell$ centers at round $r$ \\
+%        $\w$                                                                & Local model of participant $i$ at round $r$\\
+%        $\W = (w_i^r)_{i \in \llbracket 1,n \rrbracket}$                    & All local models from participants at round $r$\\
+%        $\wbar$                                                             & Global model for cluster $c_k^r$ at round~$r$\\
+%        $\Wbar = (\wbar)_{k \in \llbracket 1,|\C| \rrbracket }$             & All global models at round $r$ \\                               
+%        $e_{i,j}^r $                                                        & Evaluation of $w_j^r$ using $p_i$ local dataset $d_i$ \\
+%        $\E = [e_{i,j}^r]_{i,j \in \llbracket 1,n \rrbracket}$              & Matrix of all evaluations at round $r$; of size $n \times n$ \\
+%        $\issue = (e_{i,j}^r)_{j \in \llbracket 1,n \rrbracket}$            & $p_i$ evaluation on every participant at round $r$ \\
+%        $\rece = (e_{i,j}^r)_{i \in \llbracket 1,n \rrbracket}$             & Participants evaluations on $\p[j]$ at round $r$ \\
+%        \bottomrule % ---------------------------------
+%    \end{tabularx}
+%\end{table}
+
+\begin{algorithm}[t]
+\caption{
+    \thecontrib.
+    $R$ is the number of rounds, $\beta$ the local batch size, $\eta$ the learning rate, $\mathcal{E}$ the number of epochs, and $\lambda$ a loss function.\label{alg:xeval}}
+\begin{small}
+\begin{algorithmic}[1]
+    \Require $P$
+
+    \With{$r \gets 0$}
+        \State \( \C \gets \{ P \}                  \)
+        \State \( \Wbar \gets (\Call{Random}{\ })   \)
+    \EndWith
+    \Statex
+    \For{$r \gets 1,\dots,R $}
+        \LComment{Step (1): model training}
+        \ForAll{$p_i \in P$ \textbf{in parallel}}
+            \State $k \gets \Call{GetCluster}{p_i, \C}$
+            \State $\w \gets \Call{ClientFit}{p_i, \wbar}$
+        \EndFor
+        \Statex
+        \State \( \W \gets (\w)_{i \in n \llbracket 1,n \rrbracket} \) 
+        \Statex
+        \LComment{Step (2): cross-evaluation}
+        \ForAll{$p_i \in P$ \textbf{in parallel}} 
+            \State $(\e) \gets \Call{ClientEvaluate}{p_i, \W}$
+        \EndFor
+        \State \( \E_{[i,j]} = [e_{i,j}^r]_{i,j \in \llbracket 1,n \rrbracket} \)
+        \Statex
+        \LComment{Step (3): parameters aggregation}
+        \State \( \C \gets \Call{ComputeClusters}{\E} \)     \Comment{See:~\Cref{sec:archi.cluster}}
+        \ForAll{$  \c \in \C $}
+            \State \( (\rho_i^r) \gets \Call{ComputeReput}{\E, \C} \)   \Comment{See:~\Cref{sec:archi.reput}}
+            \State \( \Wbar \gets \frac{1}{|\c|} \sum_{i=0}^|\c| \w \)
+        \EndFor
+    \EndFor
+
+    \Statex % Client-side model training
+    \Function{ClientFit}{$p$, $\omega$} \Comment{On client.}
+        \For{$ i \gets 1,\dots,\mathcal{E} $}
+            \ForAll{$ b \in \Call{split}{\d, \beta} $}
+                \State \( \omega \gets \omega \nabla \lambda(\omega;b) \) \Comment{See:~\Cref{sec:problem.cids}}
+            \EndFor
+        \EndFor
+        \\
+        \State \Return $\omega$
+    \EndFunction
+
+    \Statex % Client-side evaluation
+    \Function{ClientEvaluate}{$p$, $\Omega$} \Comment{On client.}
+        \ForAll{$ \omega_j \in \Omega $}
+            \State \( \e \gets \Call{Eval}{\omega, \d} \)
+        \EndFor
+        \State \Return $(\e)_{i,j \in [\![ 1,n ]\!]}$
+    \EndFunction
+\end{algorithmic}
+\end{small}
+\end{algorithm}
+
+% \subsection{Reputation system\label{sec:annexes.reput}}
+% This section provides a more in-depth look at the reputation system exposed in~\ref{sec:archi.reput}.  
+% The reputation of a participant $\p$ is based on its received evaluations, $\rece[i]$ which are continuous over $[0,1]$.
+% For this reason, and similar to~\citet{fung_dirichlet-based_2011}, we choose to use a reputation system based on the multivalued Dirichlet probability distribution for trust modeling. 
+% Using a multivalued distribution allows us to discretize $\rece[i]$ into a set of $q$ possible values $\mathcal{E} = \{\varepsilon_1, \varepsilon_2, \ldots, \varepsilon_q\}$.  
+ 
+%  % Aggregation step relies on weights that are scalar values representing the importance given to a participant's parameters in the aggregation. Contributions are weighted based on the participants' reputation score, built using the evaluation matrix $\E$ as an input, and focusing on the received evaluations.
+% %These are received by a specific participant for its model parameters, and made by other participants using their own datasets. 
+% % Evaluations of participant \(p\) are computed by other participants on their local datasets by applying \(p\)'s model parameters.
+
+% % The evaluation metric of a participant is continuous over $[0,1]$ but Dirichlet distributions are multivalued.
+% % Consequently, we first
+% A Dirichlet distribution on the outcome of an unknown event is usually based on the combination of an initial belief vector and a series of cumulative observations~\cite{fung_dirichlet-based_2011}. 
+% Since the results from a complete first round of cross evaluation are already available when reputation is first assessed, we do not need to use an initial belief vector to bootstrap. 
+% Following the notation used by~\citet{fung_dirichlet-based_2011}, we denote  by $\vec{\gamma} = \{\gamma_{1},\gamma_{2},\ldots,\gamma_{q}\}$ the cumulative previous evaluations: $\gamma_{2}=3$ means that three evaluations in $\rece$ had values bounded by $[\frac{2,5}{q},\frac{3,5}{q}[$.
+
+% We then note $\Prob = {\prob[\varepsilon_1],\prob[\varepsilon_2], \ldots, \prob[\varepsilon_q]}$ the probability distribution vector for the received evaluation of a participant, where $\sum_{s=1}^{q}\prob[\varepsilon_s] = 1$.
+% Leveraging the previous evaluations $\vec{\gamma}$, the probability $\cond[\varepsilon_s]$ is given by Eq.~\ref{eq:s_knowing_gamme}, 
+% %\begin{equation}\label{eq:s_knowing_gamme}
+% %    \cond = \frac{\gamma_{s}}{\gamma_{0}},
+% %\end{equation}
+% where $\gamma_0$ is the number of evaluations previously received by $\p$, as shown in~\Cref{eq:gamma_sum}.
+% %\begin{equation}\label{eq:gamma_sum}
+% %    \gamma_0 = \sum_{s=1}^{q}{\gamma_{s}}.
+% %\end{equation}
+
+% \vspace{-1cm}
+% \begin{multicols}{2}
+% \begin{equation}\label{eq:s_knowing_gamme}
+%     \cond = \frac{\gamma_{s}}{\gamma_{0}},
+% \end{equation}\break
+% \begin{equation}\label{eq:gamma_sum}
+%     \gamma_0 = \sum_{s=1}^{q}{\gamma_{s}}.
+% \end{equation}
+% \end{multicols}
+
+% We want to limit the ability of potential malicious participants to divert the use of the reputation system by badmouthing another participant, or by artificially raising their own ratings.
+% We thus weight the issued evaluation $\issue[j]$ of a participant $\p[j] \in \c$ according to its similarity with other cluster members\cite{xiong_peertrust_2004}. 
+% The similarity is measured using the standard deviation between $\p[j]$ and its cluster center $\center$, as shown in~\Cref{eq:standard_deviation}.
+
+% % Pour ce second cas d'usage ne vaudrait-il pas mieux prendre la similarité des votes émis sur le participant qu'on est en train de pondérer plutôt que sur l'ensemble des participants ? 
+% % C'est une adaptation de peertrust qui pondère les votes en comparant les votes émis des deux participants. L'expliquer ? Justifier la diff ?
+
+% \begin{equation}\label{eq:standard_deviation}
+%     \sigma_j^r = sim(\issue[j],\center) = 1 - \sqrt{
+%         \frac{
+%             \sum_{i=1}^{|\P|}{
+%                 {(\e[j][i] - \mu^r_{k,i})}^{2}
+%             }
+%         }
+%         {
+%             |\P|
+%         }
+%     }.
+% \end{equation}
+
+
+%We then leverage a forgetting factor $\lambda \in [0,1]$ to reduce the importance of evaluations from older rounds. 
+%This necessary because we need to take past contributions into account to limit attacks phased over multiple rounds, while preventing past mistakes from permanently impacting a participant. 
+%The reputation $\rep$ of a participant $\p$ at round $r$ based on the prior knowledge $\gamma^r_i$ of this participant is given by \Cref{eq:reputation_history}.
+
+%In order to prevent attacks phased over multiple rounds, while preventing past mistakes from permanently impacting a participant, we leverage a forgetting factor $\lambda \in [0,1]$. The reputation $\rep$ of a participant $\p$ at round $r$ based on the prior knowledge $\gamma^r_i$ of this participant is given by \Cref{eq:reputation_history}.
+%%
+%%\begin{equation}\label{eq:reputation_history}
+%%    \rep = \sum_{\kappa=1}^{r}\lambda^{r-\kappa}\sigma_i^\kappa\gamma_i^{\kappa}.
+%%\end{equation}
+%%
+%Note that a small $\lambda$ gives more importance to recent evaluations: $\lambda=0$ only considers the last round while $\lambda=1$, considers all round with equal weight.  
+%%This parameter stays constant for all rounds, we chose to fix it at 0.9 following the value used by \citet{fung_dirichlet-based_2011}.
+%Based on $\rep$, let $\weight$ be the weight of $\w$ for aggregation in $\wbar$ is given by \Cref{eq:weight_computation}, where $\weight$ is the weight of $\w$, the model from $\p$, that will be used during the aggregation of $\wbar$ (see \Cref{alg:xeval}~Step~(3) in~\Cref{sec:annexes}).
+%
+%% \begin{equation}\label{eq:weight_computation}
+%%    \weight = \frac{\rep}{\sum_{j=1}^{\c}\rep[j]},
+%% \end{equation}
+%
+%\vspace{-1cm}
+%\begin{multicols}{2}
+%\begin{equation}\label{eq:reputation_history}
+%    \rep = \sum_{\kappa=1}^{r}\lambda^{r-\kappa}\sigma_i^\kappa\gamma_i^{\kappa}.
+%\end{equation}\break
+%\begin{equation}\label{eq:weight_computation}
+%    \weight = \frac{\rep}{\sum_{j=1}^{\c}\rep[j]},
+%\end{equation}
+%\end{multicols}
+%  
+%We then widen the gap between each cluster weights using their deviation to the average and passing them to a sigmoid function. 
+%We use the normal distribution cumulative density function as the sigmoid function, adjusting the $\sigma$ parameter in order to penalize attackers without having too much impact on benign participants. 
+% Schéma du placement des poids sur la courbe ? Réf vers cette figure ? 

@@ -1,0 +1,31 @@
+# @package _global_
+
+baseline:
+  name: Bertoli2022
+  description: |
+    This baseline implements the work of Bertoli et al. (2022) [1]. Some choices have been
+    made to make the baselines comparable:
+    
+    - We only implement the stacked-unsupervised federated learning approach, using only
+      benign data, as we considered the clients to only have access to normal data for
+      training. The authors also tested their appraoch with a second threshold, computed
+      using malicious samples. We did not implement this second threshold.
+
+    [1] G. de C. Bertoli, L. A. P. Junior, A. L. dos Santos, et O. Saotome, « Generalizing
+    intrusion detection for heterogeneous networks: A stacked-unsupervised federated
+    learning approach ». arXiv, 7 septembre 2022. Disponible sur:
+    http://arxiv.org/abs/2209.00721
+
+
+fl:
+  efc: true
+
+data:
+  with_efc: true
+  
+defaults:
+  - /archi: fedavg
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_
+

@@ -1,0 +1,47 @@
+\section{Discussion}\label{sec:discussion}
+
+\thecontrib shows versatility in how it addresses the complex problem of identifying attackers in heterogeneous contexts.
+However, the interpretation of the presented results is limited to our small-scale \gls{nids} use case.
+In this section, we discuss the limitations and potential consequences of our architecture and propose research directions to close these gaps. 
+
+\paragraph{Generalizability.} 
+
+While the experiments are only conducted on intrusion detection datasets, \thecontrib's design could be used in different use cases regarding the following conditions: (1) parametric local models whose parameters can be aggregated using \gls{fl}, and (2) local testing sets and relevant metrics allowing participants to evaluate the others’ models.
+Since the \gls{nids} use case induces a focus on malicious samples (\ie \emph{positive} values), we choose the F1-score as input for both the clustering and reputation, as it emphasizes on false positives and false negatives.
+Other use cases might find using the loss of a model more relevant, especially for similarity measurements.
+Further, \thecontrib's resilience against practical \gls{niid} settings makes it also relevant for safety objectives, where negligent participants can also exist.
+
+\paragraph{Scalability and performance.}
+
+The focus on small-scale collaboration (\ie a few dozens of participants) makes the overhead of the \emph{cross-evaluation} step (\Cref{sec:archi.xeval}) practical, and justifies the absence of performance-related metrics in this paper.
+However, it makes \thecontrib in its current state unsuitable for highly distributed scenarios.
+Each round, clients evaluate $|P|$ additional models, which scales linearly with the number of clients.
+Two new communications are also introduced, one to send the models and one to collect the evaluations.
+The size of the former also grows linearly with $|P|$, as the models of all participants must be distributed.
+Likewise, we exclude execution-related performance evaluation such as training time, CPU overhead, or bandwidth consumption.
+%We leave the feasibility of \thecontrib to future works, and emphasize on its ability to maintain high accuracy.
+%This makes \thecontrib more suited for small-scale collaboration, such as our \gls{cids} use case.
+It opens the way to interesting research directions on how to implement and scale \thecontrib while guarantying its properties.
+
+
+% // Removed because it only restates the findings of the Results section
+% \paragraph{Attack mitigation.} 
+
+% Throughout this paper, we emphasize on \thecontrib's versatility, as it can cope with multiple attack scenarios simultaneously.
+% However, a group of numerous attackers with evaluations close enough to benign participants might be grouped with them.
+% If they represent the majority of the newly created cluster, they will be favored by the reputation system.
+% Therefore, combining \thecontrib with additional mitigation strategies inside clusters, more geared toward the detection of numerous malicious participants, is a relevant research direction.
+\paragraph{Evaluation poisoning.}
+%While not covered in the experiments, 
+Attackers could try to poison the evaluations that they provide on other participants to abuse the system.
+%One possibility for attackers would be to change arbitrarily the evaluations that they provide on other members to abuse the system. 
+However, the implementation presented in \Cref{sec:eval.methodo} implies that attackers poison both their training and testing sets.
+Consequently, the evaluations they produce on other participants are directly affected.
+We thus expect the system to cope with arbitrary poisoning similarly to data poisoning: either by placing the attackers in a different cluster because of their dissimilarity, or by penalizing their reputation. 
+
+% \paragraph{Information disclosure.}
+% Because \thecontrib shares models with the other participants to obtain feedbacks, it can be argued that it revels more information about the participants.
+% This is limited to the participants' models, which are shared without identifiers.
+% However, since clients also receive the global model of their cluster, they can try to estimate the models that belong to their cluster.
+% This remains challenging, as the models are weighted using the reputation score of the participants, which are only available to the server.
+% Comparing the privacy impact of \thecontrib with those of simpler approaches like \texttt{FedAvg} represents interesting research directions.

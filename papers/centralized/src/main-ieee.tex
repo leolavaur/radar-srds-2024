@@ -1,0 +1,299 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               PACKAGES AND OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Use \PassOptionsToPackage here to pass options to packages already included in 
+% acmart.cls.
+
+% Avoiding imports of commonly used packages
+% ------------------------------------------------------------------------------
+
+\usepackage{amsmath,amsfonts,mathrsfs}% for math
+\usepackage{stmaryrd}                 % for special math fonts
+\usepackage{float,caption,subcaption} % for figures
+\usepackage{hyperref}                 % for hyperlinks
+\usepackage{booktabs,makecell}        % for tables
+ 
+% Packages for specific use
+% ------------------------------------------------------------------------------
+
+% lists and enumerations
+\usepackage[inline,shortlabels]{enumitem}
+% theorems definitions
+\usepackage{amsthm}
+% cross-references
+\usepackage{cleveref}
+\usepackage{suffix}
+% abbreviations
+\usepackage{xspace}
+% balancing columns
+\usepackage{balance}
+
+% Other packages and options
+% ------------------------------------------------------------------------------
+
+%% Glossary
+\usepackage[acronym]{glossaries}
+\glsdisablehyper % disable the hyperlinks
+\makenoidxglossaries
+
+%% Bibliography
+\RequirePackage[
+    %datamodel=acmdatamodel,
+    backend=biber,
+    style=ieee,
+    natbib,
+    mincitenames=1,
+    maxcitenames=1,
+    uniquelist
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+\addbibresource{trust-fids.bib}
+\addbibresource{bib-pm.bib}
+\addbibresource{bib-leo.bib}
+
+% Clear useless fields
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{pages}}
+\AtEveryBibitem{\clearfield{editor}}
+\AtEveryBibitem{\clearfield{publisher}}
+\AtEveryBibitem{\clearfield{address}}
+\AtEveryBibitem{\clearfield{series}}
+\AtEveryBibitem{\clearfield{isbn}}
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryBibitem{\clearfield{note}}
+\AtEveryBibitem{\clearfield{volume}}
+\AtEveryBibitem{\clearfield{number}}
+\AtEveryBibitem{\clearfield{location}}
+\AtEveryBibitem{\clearfield{eprinttype}}
+\AtEveryBibitem{\clearfield{eprint}}
+
+% link DOI or URL if available
+\newbibmacro{string+doi}[1]{%
+  \iffieldundef{doi}{%
+  	\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}}{\href{http://dx.doi.org/\thefield{doi}}{#1}}}
+
+% on the title, in color
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished,misc,techreport]
+  {title}{\usebibmacro{string+doi}{#1\addperiod}}
+\AtEveryBibitem{\clearfield{doi}}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocodex}
+
+% Tables
+\usepackage{tabularx}
+\usepackage{multirow}
+
+%Images / svg
+\usepackage{svg}
+
+% plot 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%tikz
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Graphs and subgraphs
+\usepackage{subcaption,graphicx}
+
+% Properly spaced abbreviations, taken from the CVPR's style
+% package (https://stackoverflow.com/a/39363004).
+% Adds a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+% \needref command
+\newcommand{\needref}{\textbf{[?]}\xspace}
+
+% Special block definition
+% ------------------------------------------------------------------------------
+% aglorithmic block definitions (https://github.com/chrmatt/algpseudocodex/issues/3)
+\algnewcommand\algorithmicwith{\textbf{with}}%
+
+\makeatletter
+\algdef{SE}[WITH]{With}{EndWith}[1]{\algpx@startCodeCommand\algpx@startIndent\algorithmicwith\ #1\ \algorithmicdo}{\algorithmicend\ \algorithmicwith}%
+\ifbool{algpx@noEnd}{%
+  \algtext*{EndWith}%
+  %
+  % end indent line after (not before), to get correct y position for multiline text in last command
+  \apptocmd{\EndWith}{\algpx@endIndent}{}{}%
+}{}%
+
+\pretocmd{\With}{\algpx@endCodeCommand}{}{}
+
+% for end commands that may not be printed, tell endCodeCommand whether we are using noEnd
+\ifbool{algpx@noEnd}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[1]}{}{}%
+}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[0]}{}{}%
+}%
+\makeatother
+
+% Personalized theorems
+% ------------------------------------------------------------------------------
+
+%% Hypotheses
+\theoremstyle{definition}
+\newtheorem{hypothesis}{Hypothesis}
+\crefname{hypothesis}{hypothesis}{hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+
+%% Challenges
+\theoremstyle{definition}
+\newtheorem{challenge}{Challenge}
+\crefname{challenge}{challenge}{challenges}
+\Crefname{challenge}{Challenge}{Challenges}
+
+%% Research Questions
+\newtheorem{innerRQ}{RQ}
+\crefname{innerRQ}{RQ}{RQs}
+\Crefname{innerRQ}{RQ}{RQs}
+
+\newenvironment{RQ}[1]
+  {\renewcommand\theinnerRQ{#1}\innerRQ}
+  {\endinnerRQ}
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
+% Tables
+% ------------------------------------------------------------------------------
+
+\newcommand{\ccell}[1]{\multicolumn{1}{c}{#1}}
+
+% File inputs
+% ------------------------------------------------------------------------------
+
+% Notation macros
+\input{includes/macros}
+% Glossary content
+\input{includes/glossary}
+
+
+% Page numbers
+% ------------------------------------------------------------------------------
+\pagestyle{plain}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+\title{Distributed Cross-evaluation for Reputation-aware Model Weighting in Federated Learning\\
+%\thanks{%
+%This research is part of the chair CyberCNI.fr with support of the FEDER development fund of the Brittany region.}
+}
+
+\newcommand{\redactedauthor}{%
+    \IEEEauthorblockN{Redacted for double-blind}
+    \IEEEauthorblockA{\textit{Redacted Lab} \\ % dept. name of organization (of Aff.)
+    Redacted \\ % City, Country
+    redacted@redacted.com} %email address or ORCID
+    \and
+}
+\author{
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+%\redactedauthor
+%\redactedauthor
+%\redactedauthor
+
+}
+
+\maketitle
+\thispagestyle{plain} % to display the page number on first page
+
+\begin{abstract}
+    % (blue) Basic introduction to the field (one or two sentences): 
+    %\Glspl{cids} improve resilience to distributed attack campaigns by allowing \acrshortpl{ids} to share locally acquired knowledge with peers.
+    %While it consequently improves detection, data sharing is challenging, especially in \gls{ml} workflows.
+    % (pink) More detailed background (Two or three s)
+    \Gls{fl} is a distributed learning paradigm that enables \glspl{cids} without the need to share local data, while still benefiting from the experience of all participants.
+    %By sharing the learning task among several actors, it allows training a global intrusion detection model that benefits from the data of all participants.
+    Negligent or malicious clients might, however, negatively contribute to the global model and degrade its performance.
+    % (yellow) General problem (1 s)
+    Existing approaches to detect adversaries tend to falter in heterogeneous settings, while \gls{cids} federations are inherently heterogeneous.
+    
+    In this paper, we present a novel \gls{fl} architecture for intrusion detection, able to deal with both, heterogeneous and malicious contributions, without the need for a single source of truth.
+    We leverage client-side evaluation for clustering participants based on their perceived similarity, and then feed these evaluations to a reputation system that weights participants' contributions based on their trustworthiness.
+
+    We evaluate our approach against four intrusion detection datasets, in both benign and malicious scenarios. 
+    % (cyan) Summarizing the main results (one s)
+    We show that our clustering successfully groups participants originating from the same dataset together, while excluding the noisiest attackers. 
+    The reputation system then strongly limits the impact of stealthier attackers within each cluster, as long as they remain a minority.
+    
+    % (green) summarizing how the result/approach compares with past work (2 or 3 s)
+    %We confront our work with a state-of-the-art poisoning mitigation approach. 
+    %We show comparable performance when using a single dataset, and vastly outperform them when data originate from multiple datasets, a case we deem more realistic for \gls{cids}.  
+    The comparison of our work with a state-of-the-art mitigation strategy highlights its versatility on both \acrshort{iid}, and non \acrshort{niid} data for the different attack scenarios. 
+    % In particular, we outperform them on \acrshort{iid} and practical \acrshort{niid} use cases, while remaining comparable in the pathological \acrshort{niid} ones, that are less relevant for \gls{cids}. 
+    
+    % The comparison of our work with a state-of-the-art mitigation strategy highlights its versatility.
+    % In particular, we outperform them on \acrshort{iid} and practical \acrshort{niid} use cases, while remaining comparable in the pathological \acrshort{niid} ones, that are less relevant for \gls{cids}.
+    
+    % (purple) Put the results in a more general context (1 or 2)
+    % (red) optional perspective (2 or 3)
+    Our work is open source, and all code will be found on a public repository in case of acceptance.%at: \codeurl. 
+\end{abstract}
+
+\begin{IEEEkeywords}
+federated learning, intrusion detection, reputation systems, trust, heterogeneity, clustering, cross-evaluation
+\end{IEEEkeywords}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+%\maketitle
+
+% Sections
+% ------------------------------------------------------------------------------
+
+\input{sections/10_introduction.tex}
+\input{sections/20_background.tex}
+\input{sections/30_problem.tex}
+\input{sections/40_soa}
+\input{sections/50_archi}
+\input{sections/60_eval}
+\input{sections/80_conclusion}
+\input{sections/90_ack}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \defaultprintbib % print the bibliography
+
+\printbibliography
+
+
+\end{document}
+%%
+%% End of file `main.tex'.

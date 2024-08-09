@@ -1,0 +1,66 @@
+\tikzset{%
+  every neuron/.style={
+    circle,
+    draw,
+    minimum size=1cm
+  },
+  neuron missing/.style={
+    draw=none, 
+    scale=4,
+    text height=0.333cm,
+    execute at begin node=\color{black}$\vdots$
+  },
+}
+
+\begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth]
+
+% Draw neurons
+\foreach \m/\l [count=\y] in {1,missing,2}
+  \node [every neuron/.try, neuron \m/.try] (input-\m) at (0,2-\y*1.25) {};
+
+\foreach \m [count=\y] in {1,2,missing,3}
+  \node [every neuron/.try, neuron \m/.try ] (hidden1-\m) at (2,2.5-\y*1.25) {};
+
+\foreach \m [count=\y] in {1,2,missing,3}
+  \node [every neuron/.try, neuron \m/.try ] (hidden2-\m) at (4,2.5-\y*1.25) {};
+
+\node [every neuron/.try, neuron 1/.try] (output) at (6,-0.75) {};
+
+% Input arrows + labels
+\foreach \l [count=\i] in {1,n}
+  \draw [<-] (input-\i) -- ++(-1,0)
+    node [above, midway] {$I_\l$};
+
+% hidden layers
+\foreach \l [count=\i] in {1,2}
+  \node [above] at (hidden1-\i.north) {$H_\l^1$};
+
+\node [below] at (hidden1-3.south) {$H_n^1$};
+
+\foreach \l [count=\i] in {1,2}
+  \node [above] at (hidden2-\i.north) {$H_\l^2$};
+
+\node [below] at (hidden2-3.south) {$H_n^1$};
+
+
+% output arrows + labels
+  \draw [->] (output) -- ++(1,0)
+    node [above, midway] {$O$};
+
+% links between layers' neuros
+\foreach \i in {1,2}
+  \foreach \j in {1,...,3}
+    \draw [->] (input-\i) -- (hidden1-\j);
+
+\foreach \i in {1,...,3}
+  \foreach \j in {1,...,3}
+    \draw [->] (hidden1-\i) -- (hidden2-\j);
+
+\foreach \i in {1,...,3}
+    \draw [->] (hidden2-\i) -- (output);
+
+% headers
+\foreach \l/\s [count=\x from 0] in {Input/39, Hidden/128, Hidden/128, Ouput/1}
+  \node [align=center, above] at (\x*2,2) {\l \\ layer (\s)};
+
+\end{tikzpicture}

@@ -1,0 +1,20 @@
+{
+    "botiot_sampled": [
+        "client_0",
+        "client_1"
+    ],
+    "cicids_sampled": [
+        "client_2",
+        "client_3",
+        "client_4"
+    ],
+    "nb15_sampled": [
+        "client_5",
+        "client_6",
+        "client_7"
+    ],
+    "toniot_sampled": [
+        "client_8",
+        "client_9"
+    ]
+}

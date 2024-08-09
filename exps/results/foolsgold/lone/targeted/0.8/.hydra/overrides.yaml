@@ -1,0 +1,6 @@
+- archi=foolsgold
+- scenario/distribution=lone
+- +scenario/target=targeted
+- scenario/attacker=stealth0.8
+- xp.seed=56
+- fl.drop_class=False

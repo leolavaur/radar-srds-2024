@@ -1,0 +1,14 @@
+{
+    "botiot": [
+        "client_000",
+        "client_001",
+        "client_002",
+        "client_003",
+        "client_004",
+        "client_005",
+        "attacker_000",
+        "attacker_001",
+        "attacker_002",
+        "attacker_003"
+    ]
+}

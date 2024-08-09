@@ -1,0 +1,23 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS AE
+  description: |
+    This baseline implements the entire Trust-FIDS stack, including the reputation
+    system, on top of the AE client. The local AE is taken from Bertoli's work (see
+    bertoli.yaml).
+
+    See the settings in archi/trustfids.yaml, and their respective configuration files
+    or details on the available options.
+
+
+archi:
+  strategy:
+    # default metric unless either clustering_metric or reputation_metric is set 
+    evaluation_metric: "f1"
+
+defaults:
+  - /archi: trustfids
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_

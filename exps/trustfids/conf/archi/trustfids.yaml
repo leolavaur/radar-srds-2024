@@ -1,0 +1,17 @@
+# @package _global_
+
+archi:
+  name: Trust-FIDS
+  description: |
+    This configuration of implements RADAR, with the appropriate components:
+      * Cross-evaluation enabled server and client
+      * The cross-evaluation strategy
+
+    This configuration can then be used with any combination of scenario, learner, and
+    dataset. 
+
+defaults:
+  - /archi/server: xevalserver
+  - /archi/strategy: fedxeval
+  - /archi/client: xevalclient
+  - _self_

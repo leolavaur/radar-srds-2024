@@ -1,0 +1,5 @@
+- archi.strategy.clustering_kwargs.threshold_type=fixed
+- archi.strategy.clustering_kwargs.distance_type=euclidean
+- archi.strategy.clustering_kwargs.alpha=0.8
+- archi.strategy.clustering_metric=accuracy
+- archi.strategy.reputation_metric=f1

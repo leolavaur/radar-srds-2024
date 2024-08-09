@@ -1,0 +1,248 @@
+
+
+\section{Introduction}\label{sec:intro}
+
+%With the ever-increasing number of cyberattacks, \gls{ids} play a critical role in the protection of information systems.
+%\Glspl{nids} are especially relevant for organizations, as they can detect malicious activities in large-scale information networks, such as data exfiltration or \gls{dos} attacks. 
+%
+%\Gls{ml} is significantly represented in the \gls{nids} literature, enabling the characterization of network traffic and detection of abnormal behaviors.
+%However, these \gls{ml} algorithms require large quantities of data to be trained.
+%While data-sharing between organizations could address this requirement, 
+%As a result, stakeholders generally show reluctance to adopt \glspl{cids}.
+
+For several years, the adoption of collaborative \gls{ml} has been limited by the risks induced in data-sharing.
+\Glspl{nids} are especially concerned, as sharing network data can expose information about the inner workings of information systems.
+The recent advances~\cite{kairouz_advances_2021} in \gls{fl} promise to solve such issues, allowing participants to collaboratively train a global model without sharing their local data~\cite{mcmahan_communication-efficient_2017}.
+% - Contexte de la contribution et cas d'application du FL: conglomérat d'organisations (on cite acteurs industriels ?) ayant des exigeances de sécurité suffisament proche pour souhaiter partager des informations de détection d'intrusion.
+%\Gls{fl} is a privacy-preserving distributed learning paradigm that allows 
+Specifically, organizations in \glspl{cids} can leverage \gls{hfl} (\ie same features, but different samples), to share their observations with other participants while keeping their locally collected network data private~\cite{lavaur_evolution_2022}. %, thus virtually extending the size of their training set.
+
+% - PB1: Tout systeme collaboratif s'expose à la participation d'acteurs malveillants ou simplement de bonne foi avec des données de mauvaise qualité -> créer de la confiance
+Collaborative systems are especially sensitive to input quality.
+For instance, malicious participants in a \gls{cids} could poison their contributions to impact the convergence of the global model, or introduce backdoors that could be exploited afterward.
+Even honest participants can negatively contribute to the aggregation by training their model on data of poor quality or by being unaware of attacks present in their network.  
+% - PB2: Dans un contexte fortemmet hétérogène il est difficile de distinguer une attaque d'une contribution différente du fait de ses données d'entrées.
+Moreover, different organizations might exhibit substantial differences in their information systems, such as hosted services or used protocols.
+This can lead to significant variations in model updates, as each organization trains its model on its local network traffic.
+In this heterogeneous context, it is very difficult to distinguish a negative contribution from a legitimate one originating from a different infrastructure.
+
+% SOA:
+% -
+% Approaches that aim to mitigate model poisoning typically leverage a single source of truth or model comparisons .
+% They either compare  on a single source of truth \cite{blanchard_machine_2017,cao_fltrust_2022}, such as a server-maintained model or a representative training set, to compare participants' updates with.
+% However, building a single source of truth is infeasible in \gls{niid} settings, due to the differences between participants.
+% % - en mode "pair-wise"
+% In contrast, other works compare participants' model updates with each other.
+% It can be used to either remove outliers in \gls{iid} settings~\cite{yin_byzantine-robust_2018}, or detect participants that collude to poison the global model in \gls{niid} settings~\cite{fung_limitations_2020, awan_contra_2021}. 
+% These \gls{niid} technics, however, fail to detect a single attacker, we also show that in case where legitimate participant look alike they can be detected as colluding participants. 
+
+% - anti-poisoning iid
+Approaches that mitigate model poisoning in homogeneous distributions typically compare or evaluate a model using a single source of truth~\cite{blanchard_machine_2017,cao_fltrust_2022}.
+% KO en non-iid
+Building such a single source of truth, however, is infeasible in heterogeneous contexts due to the differences between participants. 
+Assuming that all contributions are different, some approaches detect colluding attackers based on their similarity~\cite{fung_limitations_2020, awan_contra_2021}. 
+%By construction, 
+Nevertheless, these approaches fail to detect an isolated, yet potent, attacker.
+%We also show that in case where legitimate participant look alike, they can be unfairly detected as colluding participants. 
+
+
+% % % - avec single source of truth
+% Some rely on a single source of truth \cite{blanchard_machine_2017,cao_fltrust_2022}, such as a server-maintained model or a representative training set, to compare participants' updates with.
+% However, building a single source of truth is infeasible in \gls{niid} settings, due to the differences between participants. 
+% % - en mode "pair-wise"
+% In contrast, other works compare participants' model updates with each other.
+% It can be used to either remove outliers in \gls{iid} settings~\cite{yin_byzantine-robust_2018}, or detect participants that collude to poison the global model in \gls{niid} settings~\cite{fung_limitations_2020, awan_contra_2021}. 
+% These \gls{niid} technics, however, fail to detect a single attacker, we also show that in case where legitimate participant look alike they can be detected as colluding participants. 
+% However, similarity-based filtering would exclude model updates that are different, even though they are relevant to the global model.
+% For instance, two models trained on different protocols can differ statistically, could maintain high accuracy on a common test set.
+
+
+% % notre approache fait (présentation TRES rapide)
+% % - les métriques de comparison de modèles entre eux ne sopnt pas pertyinentes (single source, model diff mais performant) -> cross-evaluation
+% % - besoinde réduire l'hétérogénéité -> clustering (cite qques paiers qui en font déjà) mais en utilisant les métriques fournies par la xeval
+% % - cluster ne prend pas enc compte l'historique, et risque de manquer des déviation fines -> réputation en prenant les eval comme feedback
+% % - objectif: construire de la confiance par éval sucessive
+% For these reasons, we present \thecontrib, a defense strategy for \gls{csfl} that relies on client-side model evaluation.
+% Instead of comparing participant models on the server, we propose that participants subjectively evaluate the others' contributions. %' quality. 
+% To that end, we add a new step to the typical \gls{fl} workflow, between training and aggregation, where each participant uses its local dataset to evaluate the other participants' models. 
+% %Based on the result of this cross-evaluation, our approach regroups similar-looking participants together using hierarchical clustering, before weighting their model aggregation using a reputation system.
+% %These evaluations are adjusted based on their historical similarity with other cluster member evaluations. 
+% Our approach then leverages this \emph{cross-evaluation} to assess participants' similarity and group them using hierarchical clustering, before weighting the model aggregation using a reputation system.
+
+In this paper, we present \thecontrib, a defense strategy for \gls{csfl} aiming at detecting attackers (colluding or not) regardless of the data homogeneity. \thecontrib relies on three main ingredients:
+\begin{enumerate*}[label=\em {\roman*})]
+    % \item contrarily to classical FL approaches where participants models are compared on a centralized server, we propose that participants subjectively evaluate the others' contributions. %' quality. 
+% To that end, we add a new step to the typical \gls{fl} workflow, between training and aggregation, where each participant uses its local dataset to evaluate the other participants' models,
+    \item a modified \gls{fl} workflow, where each participant uses its local dataset to evaluate the other participants' models, between training and aggregation steps, in contrast with classical FL approaches where participants models are compared on a centralized server,
+    % \item a modified \gls{fl} workflow, where each participant evaluates the other participants' models thanks to its local dataset,
+    \item participants are gathered into clusters thanks to their similarity,
+    \item a reputation system is leveraged to weight participants contributions.
+    %on a global model.
+\end{enumerate*}
+
+% Our evaluation shows that \thecontrib can effectively identify lone and colluding attackers in highly heterogeneous settings, while ensuring convergence of the benign participants.
+We measure the performance of \thecontrib using four network flow datasets with standardized features, representing various use cases.
+%We show that our clustering method can reproduce the initial distribution of participants. 
+We also compare our approach to existing ones~\cite{mcmahan_communication-efficient_2017,fung_limitations_2020}, and find that \thecontrib detects attackers under most attack scenarios, including lone and colluding attackers, targeted and untargeted attacks, in different types of poisoning strategies.
+
+% Summary
+To summarize, our contributions are threefold:
+%TODO LN moi je metterai des formes passives
+\begin{enumerate}[label=({\arabic*})]
+    \item we present \thecontrib, an architectural scheme to protect \gls{fl} strategies using clustering and reputation-aware aggregation; with an extensive evaluation under different attacks and distributions, and against relevant baselines,
+    \item we show that evaluation metrics (such as accuracy, f1-score, or loss) can effectively be used to assess similarity between \gls{fl} participants, and as input to clustering algorithms,
+    \item we provide a \gls{fl} reputation system, leveraging local evaluation to swiftly adapt aggregation weights and protect the system's convergence.
+    %\item We compare our approach with \texttt{FoolsGold}~\cite{fung_limitations_2020}, a relevant baseline that emphasizes on detecting colluding attackers in heterogeneous contexts.
+    %\item We provide extensive evaluation \thecontrib under different types of attacks and client distributions.
+\end{enumerate}
+
+%%%% §7 Leo
+The rest of this paper is organized as follows.
+\Cref{sec:problem} defines the addressed problem and introduces our threat model.
+We detail in \Cref{sec:related} our positioning and \thecontrib's benefits over related works.
+\Cref{sec:archi} presents \thecontrib's design and core components, before an extensive evaluation in \Cref{sec:eval}.
+We discuss our findings in \Cref{sec:discussion} before concluding and laying out future works.
+
+
+
+
+% NIDS background
+%Intrusion detection refers to methods and systems that can identify potential threats in an information system.
+%Sharing actionable intelligence between organizations can improve the performance of \glspl{ids}. 
+%However, collaboration also brings challenges, \eg trust between parties, privacy and confidentiality and, finally, protection against poisoning~\cite{wagner_novel_2018}.
+%
+%Typical collaborative \gls{ml} requires all data to be centrally collected, curated, and processed.
+%Sending training data to a remote server implies sending it over a network.
+%Depending on the type of training data, it can represent an important bandwidth consumption, especially for \gls{nids} workflows.
+% Finally, it can also mean that clients are unable to exploit their data locally, and solely rely on a remote server to provide them with t
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+
+% By only sharing the model weights instead of the underlying data or IoC federated learning limit the risk of unintentional information disclosure. 
+% Traditionally, and for the sake of simplicity, the aggregation of the global model is done using the average weight from local models.
+% Each local model from the participants thus have an equal impact on the global model which might not be ideal.%% TODO 2 : insérer citation, le nom de "l'algo" de base c'est FedAvg ?
+% In our case, different participants might have infrastructures too diverse to make knowledge transfer between participants possible. 
+% Also, compromised participants might unknowingly send inaccurate classification that end up poisoning the aggregated model.  
+% Strategies that take into account the quality of the local model during the aggregation process have been shown to increase the accuracy of the global model and to converge faster.\cite{wang_reputation-enabled_2021,wang_novel_2020}
+
+% Theses strategies usually rely on a comparison between the evaluated local model and one or multiple other models. 
+
+%The comparison can take different forms : 
+% \begin{enumerate}
+%     \item It can be made against variants from the global model, e.g. the global model from the last round. Alternatively, against a temporary version of the new global model curated from the evaluated local model. \cite{wang_reputation-enabled_2021} \cite{xia_tofi_2021}
+%     \item It can be a pairwise comparison with the others local models \cite{wang_flare_2022} 
+%     \item Deviation from historical local models
+%     \item Assessing the accuracy of the local models by testing it against a data-set located on the central actor that is in charge of the aggregation process.\cite{cao_fltrust_2022} \cite{xia_tofi_2021}. 
+% \end{enumerate}
+% 
+% This last strategy however make the assumption that the central actor detain a part of the data set that is representative of the locals data set and are typically more aimed at IID-dataset.
+% 
+% In order to also address non IID-dataset, having a representative data set located on central actor is too strong of an assumption.
+% 
+% We try to tackle this problem by letting the participants evaluate the local models accuracy of their peer themselves. 
+% 
+% Based on existing work in trust and reputation we build a trust overlay to better judge the feedback that participants sent on the local models of their peers. 
+% 
+% The reliability of this approach is dependant on the collaboration between participants and thus on the chosen threat model that will be detailed in section TODO. 
+% % TODO : lien vers la section threat model
+% Aggregation strategies usually discard local models that are too different from the global model.
+% Based on the hypothesis that different models might be more accurate for diverse environments we choose to cluster local models that match together instead of pruning all the deviations from the global model. 
+% This effectively create several global models in which a participant local model can be aggregated. 
+% 
+% % Several strategies have also been suggested to measure the difference between two models : 
+% % \begin{enumerate}
+% %     \item cosine similarity 
+% %     \item
+% % \end{enumerate}
+% 
+% % Attention je n'ai pas mentionné l'élément différentiant qui est le fait de tester l'accuracy du modèle ches les participants plutôt que centralement ou de se baser sur un score similitude. 
+% % C'est bénéfique car cela permet de ne pas avoir de données sur l'acteur centralisé et de traiter des cas non-IID. Nous sommes typiquement dans ce type de scénario car les organisations peuvent avoir des infrastructurs très différentes. 
+% 
+% 
+% %\subsection{Use case of collaborative intrusion detection} 
+% 
+% The goal is to be able to detect an anomaly and an intrusion with several systems collaborating.
+% We propose to use federated learning.
+% 
+% An entity has a global view of its network (with various devices), it has a knowledge of the traffic running on the network (pcap file for ex). 
+% The goal is to learn the legacy comportment by learning it on the traffic, then it will be able to detect an anomaly (by reducing the dimension of the model). 
+% It will compute the reduction of the dimension by exchanging information with other entities (organizations participating in the collaboration to detect anomalies).
+% 
+% The model is synchronous with rounds. 
+% The system will ask the model to learn and to share its state with others involved in the collaboration.
+% 
+% At each round, the server shares the current model (the weight matrix). 
+
+
+%%%
+% Léo : détient des métriques pertinentes à observer pour savoir quelle serait l'overhead d'un tel système et les critères % de réussite.
+% 
+% Hypothèse :
+% 	- 
+% 	
+% ## Evaluation système malveillant 
+% - Consomation ressource 
+% - Détection d'un acteur malveillant  
+%  
+%  Regarder plus précisement les métriques d'intérêt du point de vue du système de réputation : 
+% - Acteurs malveillant. 
+% - Consomation ressources.
+% 
+% 
+% 
+% Distiction de ce travail : 
+% - vis à vis du feaderated learning
+% - ou vis à vis de 
+% 
+% 
+% Voir s'il y a particularité vis à vis des autres systèmes de réputation utilisés dans le federated learning ? 
+% - Est-ce que l'aspect clusterisation. 
+% - 
+% 
+% Clusterisation à partir de l'évaluation local du modèle. 
+% Déviance du modèle vis à vis d'un historique. 
+% Ecart du modèle : 
+% 	- distance entre les deux matrices de poids. 
+% 
+% On peut vérifier la distance entre deux modèles parfaits. 
+% 
+% 
+% Parcourir l'histoire du usecase : 
+% 
+% 
+% Histoire pour le usecase :
+% ### Point de vue du client
+% Je (un appareil d'une organisation) reçoit des logs du traffic passant sur l'ensemble du réseau (qui peut être de taille variable) j'en apprend le comportement normal via réduction de dimmension : on trouve un modèle qui reconstruit le trafic et on observe l'écart entre le trafic observé et le traffic réel. Si il y a un écart c'est que c'est une anomalie. C'est e modèle de réduction qui est partagée sous forme d'une matrice de poids à d'autres organisations.
+
+% ##C hoix A
+% Synchronization par round synchrone dictés par le serveur de federated learning qui m'envoie le modèle courant (aléatoire à l'initialaisation, résultat du dernier round sinon) et des tâches de travail. Une fois que ma tâche de travail est terminée je renvoie mon modèle au serveur. 
+% Le serveur me renvoie en retour des modèles à évaluer sur mon jeu de données. Je les laisses tourner sans m'en servir pour % faire de la classification et renvoi un score d'accuracy au serveur.
+% 
+% - clusterisation 
+% - répartition des poids
+
+
+
+% ## Choix B
+% Possible de faire des systèmes moins sychrone avec du choix de l'information. 
+% Les modèles sont pas très gros. 
+% 
+% 
+% Une entitée 
+% 
+% Serveur centrale 
+ 

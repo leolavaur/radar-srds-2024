@@ -1,0 +1,167 @@
+{
+    "client_000": {
+        "silo_name": "nb15",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "Benign": 153603,
+                "Exploits": 2079,
+                "Fuzzers": 1494,
+                "Generic": 1131,
+                "Reconnaissance": 844,
+                "DoS": 407,
+                "Analysis": 173,
+                "Backdoor": 163,
+                "Shellcode": 93,
+                "Worms": 13
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "Benign": 192016,
+                "Exploits": 2637,
+                "Fuzzers": 1875,
+                "Generic": 1395,
+                "Reconnaissance": 1070,
+                "DoS": 491,
+                "Analysis": 194,
+                "Backdoor": 185,
+                "Shellcode": 124,
+                "Worms": 13
+            }
+        }
+    },
+    "client_001": {
+        "silo_name": "nb15",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "Benign": 153715,
+                "Exploits": 2067,
+                "Fuzzers": 1520,
+                "Generic": 1090,
+                "Reconnaissance": 827,
+                "DoS": 385,
+                "Backdoor": 144,
+                "Analysis": 141,
+                "Shellcode": 98,
+                "Worms": 13
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "Benign": 192016,
+                "Exploits": 2637,
+                "Fuzzers": 1875,
+                "Generic": 1395,
+                "Reconnaissance": 1070,
+                "DoS": 491,
+                "Analysis": 194,
+                "Backdoor": 185,
+                "Shellcode": 124,
+                "Worms": 13
+            }
+        }
+    },
+    "client_002": {
+        "silo_name": "nb15",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "Benign": 153652,
+                "Exploits": 2064,
+                "Fuzzers": 1506,
+                "Generic": 1156,
+                "Reconnaissance": 831,
+                "DoS": 387,
+                "Analysis": 159,
+                "Backdoor": 149,
+                "Shellcode": 84,
+                "Worms": 12
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "Benign": 192016,
+                "Exploits": 2637,
+                "Fuzzers": 1875,
+                "Generic": 1395,
+                "Reconnaissance": 1070,
+                "DoS": 491,
+                "Analysis": 194,
+                "Backdoor": 185,
+                "Shellcode": 124,
+                "Worms": 13
+            }
+        }
+    },
+    "client_003": {
+        "silo_name": "nb15",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "Benign": 153501,
+                "Exploits": 2197,
+                "Fuzzers": 1508,
+                "Generic": 1128,
+                "Reconnaissance": 904,
+                "DoS": 360,
+                "Analysis": 152,
+                "Backdoor": 140,
+                "Shellcode": 104,
+                "Worms": 6
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "Benign": 192016,
+                "Exploits": 2637,
+                "Fuzzers": 1875,
+                "Generic": 1395,
+                "Reconnaissance": 1070,
+                "DoS": 491,
+                "Analysis": 194,
+                "Backdoor": 185,
+                "Shellcode": 124,
+                "Worms": 13
+            }
+        }
+    },
+    "client_004": {
+        "silo_name": "nb15",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "Benign": 153591,
+                "Exploits": 2143,
+                "Fuzzers": 1474,
+                "Generic": 1076,
+                "Reconnaissance": 876,
+                "DoS": 425,
+                "Analysis": 150,
+                "Backdoor": 144,
+                "Shellcode": 114,
+                "Worms": 7
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "Benign": 192016,
+                "Exploits": 2637,
+                "Fuzzers": 1875,
+                "Generic": 1395,
+                "Reconnaissance": 1070,
+                "DoS": 491,
+                "Analysis": 194,
+                "Backdoor": 185,
+                "Shellcode": 124,
+                "Worms": 13
+            }
+        }
+    }
+}

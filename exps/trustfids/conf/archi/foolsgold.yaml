@@ -1,0 +1,19 @@
+# @package _global_
+
+baseline:
+  name: FoolsGold
+  description: |
+    This configuration implements the FoolsGold algorithm, as described in [1]. It uses
+    the default client, with a dedicated strategy SimFoolsGold.
+    
+    [1] C. Fung, C. J. M. Yoon, and I. Beschastnikh, “The limitations of federated
+    learning in sybil settings,” in 23rd international symposium on research in attacks,
+    intrusions and defenses (RAID 2020), San Sebastian, Oct. 2020, pp. 301–316. [Online].
+    Available: https://www.usenix.org/conference/raid2020/presentation/fung
+
+
+defaults:
+  - /archi/strategy: foolsgold
+  - /archi/server: flowerserver
+  - /archi/client: idsclient
+  - _self_

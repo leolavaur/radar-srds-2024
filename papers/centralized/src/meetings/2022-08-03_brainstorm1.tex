@@ -1,0 +1,155 @@
+\documentclass{article}
+\usepackage{markdown}
+\usepackage{parskip}
+%\setlength{\parindent}{0cm}
+\begin{document}
+\begin{markdown}
+## Federated learning pour la détection d'intrusion
+
+Apprentissage local du comportement normal de chacun des participants (ou clients) puis partage et agrégation des modèles locaux en un modèle global (Pas de partage de règles ou d'IoC direct, c'est bien le modèle et donc ses paramètres qu'on partage).
+Le modèle global est ensuite re-distribué vers les clients (la redistribution est caractéristique du FL, sinon on est plutôt dans du distributed learning).
+L'agrégation peut être faite :
+
+- Auprès d'un acteur centralisé, un tiers de confiance
+- De manière décentralisée entre les clients
+	- Plutôt dans le mode cross silo, car moins de clients
+
+### Différence cross-silo / cross-device
+
+**Cross device** : potentiellement des milliers d'utilisateurs, peu d'interactions entre les acteurs, les informations remontées sont centralisées. Tâche commune à tous les appareils (ex: gBoard). Les devices peuvent contribuer de manière éparse et non continue. 
+
+**Cross silo** : Un appareil chargé de l'apprentissage dans un réseau plus large (par exemple une VM dédiée dans un réseau d'entreprise). Plus d'hétérogénéité, car plus de source de données différentes mais moins de client à gérer ; ordre de grandeur : dizaine, centaine. Continuité dans la disponibilité une fois mise en place. 
+
+Les environnements métiers observés peuvent-être très hétérogènes, des méthodes de clustering sont parfois faites pour regrouper les environnements se ressemblants le plus entre eux. Il faut alors trouver un compromis entre spécialisation et généralisation des modèles, car :
+
+- Modèle trop spécifique : perte d'information, faible couverture et potentiels problèmes de vie privée
+- Modèle trop générique : les informations partagées ne sont pas utilisables, plus de faux positifs/négatifs
+
+La détection d'intrusion concerne typiquement des configurations cross-silo entre organisations, bien qu'une approche cross-device puisse être considérée, par exemple pour un EDR.
+
+### Horizontal / Vertical federated learning
+
+**Horizontal FL** : chacun a les mêmes features, chaque entité à des samples différents.
+Objectif : étendre virtuellement le dataset d'apprentissage (exhaustivité).
+
+**Vertical FL** : une partie du sample est commune chez plusieurs clients, ce sont les features qui sont différentes.
+Objectif : corrélation entre les informations de plusieurs acteurs ayant des vues différentes sur des données similaires (eg. Assurance + Banque pour contexte de répression des fraudes).
+Modèle plus complexe.
+
+
+## Cadre de la contrib
+
+### Format
+
+Double contrib sur des scopes différents pour : 
+
+- mieux intégrer les contribs dans les thèses de chacun 
+- Premier auteur partagé sur les sujets ou c'est pertinent 
+    - Léo: FL + detection + reputation/clustering
+    - PM: FL + réputation + décentralisé
+
+### Echéancier 
+Léo actuellement en attente de prérequis pour avancer sur ses autres contribs mais le pic de travail en approche : 
+
+- Une fois les prérequis arrivés, c'est départ au charbon
+- Rédaction du manuscrit qui se rapproche 
+- Pression d'avoir une contrib scientifique le plus tôt possible
+
+ Intérêt à faire une contrib avec un scope restreint par des hypothèses clivantes sur l'aspect système de réputation décentralisé poussée par Léo
+ 
+ Qui pourra être élargie sur un système décentralisé éventuellement en gérant les entrées-sorties (de participants) par PM quand Léo sera sous l'eau
+
+Compléments d'argumentaire :
+
+- Transfert de compétence indirect sur la rédaction, l'organisation et le formatage du papier lors du papier
+
+### Cas d'usage basique : 
+
+Détection d'intrusion sur données réseaux. Partage d'information entre organisations sans compromettre la sécurité et la confidentialité des organisations participantes. Algorithme d'apprentissage *à définir* (supervisé VS non-sup), influence possible sur la gestion de la réputation des acteurs.
+
+#### Hypothèses contrib 1
+
+- Apprentissage distribué et fédéré 
+- Agrégation centralisée (serveur tiers fully trusted)
+- Acteurs connus, honest-but-curious.
+    - Peuvent être compromis mais pas malveillants
+	- Pas de discading d'identités 
+
+#### Hypothèses contrib 2
+
+- Apprentissage local mais fédéré (gossip ?)
+- Agrégation décentralisée, p2p
+- système ouvert (?)
+    - acteurs peuvent entrer et sortir
+
+### Notes vrac contrib
+
+- Comment évaluer l'information ?
+    - Element de comparaison de modèle (eg. entre eux, avec le modèle global, avec un historique)
+    - faire tester les modèles partagés à aux clients (federated evaluration ??).
+- C'est quoi la réputation dans ce modèle là. 
+- Seuil de réputation/fenêtre glissante, quel cas d'usage ? 
+- Qu'est ce que je fais pour un nouvel acteur 
+	- Problématique des nouveaux entrants 
+	- Ecarté pour contrib 1: je connnais les acteurs
+	- Sinon pour contrib 2 création d'un système de voisinage avec identitées réparties sur une DHT. Procédure de sélection de nouveaux voisins aléatoire sur la DHT pour entrer dans le système/sortir d'une situation de cluster clivée.
+		- Nécessité que les acteurs pré-sélectionnés aient un peu contribué pour ne pas flooder la DHT avec des nouveaux venus menteurs.
+	- Tests de proximité pour voir si le voisin match et random walk pour trouver de nouveaux voisins. 
+	- Je ne connais pas leur niveau d'hétérogénéité 
+
+- interaction is suppose continuous, except if client selection (random or not) does not select said client for a long time. Other exception would be distance-based clustering, where clients might not interact (if considered a peer-to-peer setup)
+
+
+
+- lien avec systèmes distribuées : "comment construire une conaissance commune a partir de k acteurs qui communiquent en minimisant le nombre d'acteurs qui communiquent."
+
+
+### Notes génériques en vrac
+
+Pas vraiment de granularité car on ne peut pas classer l'impact des règles. 
+Rip : [[RepCIDN A Reputation-based Collaborative Intrusion Detection Network to Lessen the Impact of Malicious Alarms]]
+
+Structure hirérachique possible, niveau d'aggrégation potentiellement basé sur des structures de proximité de cas d'usage.
+We could consider hierarchic approaches, where for instance silos could be created based on the confidentiality (eg. "secret defense") level, or some certification
+
+
+Capacité d'évaluer la véracité du modèle nécessaire pour faire fonctionner le système de réputation. Globalement pas facile car  :
+- pas d'accès aux données.
+- nécessité d'être proche des données clients pour effectuer une vérification. 
+
+Mais néanmoins possible ? 
+Le tiers de confiance envoie au client des modèles à tester sur leurs datasets locaux : le client remonte en retour des indicateurs de performance. Permet de faire à la fois :
+    - la clusterisation : en fonction de la compatibilité du modèle avec le noeud qui le vérifie.
+    - La pondération des poids en fonction de l'efficacitée du modèle
+
+Il serait potentiellement possible de "tester" le client en comparant son résultat à celui d'autres clients voir en incluant des modèles erronés et en attendant sa réaction.
+
+Sinon, multi party computation : vérifier que le calcul à bien été fait sur le modèle a défaut de vérifier son résultat. VOir aussi TEE (TrustZone, ...)
+Oui mais si le data set n'est pas le bon ?
+
+Device tree : représentation de ton système sous forme d'arbre. Permet d'avoir une idée du type de système sur lequel le modèle à été entraîné pour clustering. => leak d'information supplémentaire
+
+Thèse de Kévin Hoareu : détection d'anomalies gaph BGP : 
+GNN : Graph Neural Network 
+Metrics pour analyser les faux positifs / vrais négatifs. 
+
+
+Cas d'usage byzantin : # FLTrust: Byzantine-robust Federated Learning via Trust Bootstrapping
+
+
+#### Vie privée 
+Entrée dans le système de partage d'information, il ne faut pas pouvoir reconstituer les infos d'origine à partir du modèle. 
+
+Chiffrement homomorphe pour répondre aux problèmes de vie privé? => opérations à base d'additions et de division, possible de faire de l'homomorphie partielle (type Paillier) et pas du FHE?.
+
+* Fung, Carol J., and Quanyan Zhu. “FACID: A Trust-Based Collaborative Decision Framework for Intrusion Detection Networks.” _Ad Hoc Networks_ 53 (December 15, 2016): 17–31. [https://doi.org/10.1016/j.adhoc.2016.08.014](https://doi.org/10.1016/j.adhoc.2016.08.014).
+
+
+### 5 G 
+Entrainement du modèle via FL permet de ne pas avoir à rendre public les notes de gens. Permet de se rapprocher d'un cas d'usage réel sur lequel les opérateurs ne sont pas prêt à divulguer leur perfs. 
+
+A priori semble beaucoup très complexe pour de l'obfuscation.  
+
+
+\end{markdown}
+\end{document}

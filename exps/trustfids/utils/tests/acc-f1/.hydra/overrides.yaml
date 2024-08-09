@@ -1,0 +1,5 @@
+- archi.strategy.clustering_kwargs.threshold_type=dynamic
+- archi.strategy.clustering_kwargs.distance_type=cosin_sim
+- archi.strategy.clustering_kwargs.alpha=0.8
+- archi.strategy.clustering_metric=accuracy
+- archi.strategy.reputation_metric=f1

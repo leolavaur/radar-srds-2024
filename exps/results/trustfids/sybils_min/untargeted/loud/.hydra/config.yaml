@@ -1,0 +1,64 @@
+fl:
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  drop_class: false
+  drop_different_classes: true
+  drop_all_class_but_one: false
+  drop_class_nb: 1
+  silos:
+  - dataset: cicids
+    clients: 5
+  - dataset: toniot
+    clients: 5
+  - dataset: botiot
+    clients: 3/2
+  - dataset: nb15
+    clients: 5
+attacker:
+  poison_eval: true
+  poisoning: '1.0'
+  target: null
+xp:
+  seed: 56
+  save: false
+hardware:
+  auto: true
+  cpu_headroom: 0.1
+dataset:
+  load_data:
+    _target_: trustfids.dataset.nfv2.load_data
+    base_path: ../data/sampled/
+    test_ratio: 0.2
+    common_test: true
+learner:
+  _target_: trustfids.client.learners.MLPPopoola.remote
+archi:
+  server:
+    _target_: trustfids.server.server.XevalServer
+  strategy:
+    _target_: trustfids.server.strategy.FedXeval
+    num_epochs: ${fl.num_epochs}
+    batch_size: ${fl.batch_size}
+    initial_parameters: null
+    clustering_metric: f1
+    reputation_metric: f1
+    evaluation_metric: f1
+    clustering_kwargs:
+      input_type: xevals
+      threshold_type: mean
+      alpha: 1.25
+      distance_type: cosin_sim
+      log: true
+    reputation_system:
+      _target_: trustfids.reputation.reput.DirichletReputationEnvironment
+      class_nb: 10000
+      lmbd: 0.3
+  client:
+    _target_: trustfids.client.base.XevalClient
+    self_evaluation: true
+  name: Trust-FIDS
+  description: "This configuration of implements Trust-FIDS, with the appropriate\
+    \ components:\n  * Cross-evaluation enabled server and client\n  * The cross-evaluation\
+    \ strategy\n\nThis configuration can then be used with any combination of scenario,\
+    \ learner, and\ndataset. \n"

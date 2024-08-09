@@ -1,0 +1,4 @@
+- scenario/distribution=lone
+- scenario/target=untargeted
+- scenario/attacker=stealth
+- archi.strategy.reputation_system.lmbd=0

@@ -1,0 +1,5 @@
+- scenario/distribution=sybils_min
+- scenario/attacker=increment
+- +scenario/target=targeted
+- xp.seed=56
+- fl.drop_class=False

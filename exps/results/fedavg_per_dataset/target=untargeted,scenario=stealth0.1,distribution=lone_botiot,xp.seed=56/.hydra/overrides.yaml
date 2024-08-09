@@ -1,0 +1,6 @@
+- archi=fedavg
+- scenario/distribution=/single_cluster/lone_botiot
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.1
+- xp.seed=56
+- fl.drop_class=False

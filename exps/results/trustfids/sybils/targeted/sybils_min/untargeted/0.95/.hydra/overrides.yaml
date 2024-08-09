@@ -1,0 +1,5 @@
+- scenario/distribution=sybils_min
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.95
+- xp.seed=56
+- fl.drop_class=False

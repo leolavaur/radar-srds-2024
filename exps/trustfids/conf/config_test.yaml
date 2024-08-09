@@ -1,0 +1,72 @@
+# Trust-FIDS Project testing configuration file 
+# ---------------------------------------------
+# 
+# This file is an alternative configuration file for the Trust-FIDS project. It
+# instantiates a reduced version of the experiment for testing purposes. 
+#
+# For more information, please refer to the main configuration file `config.yaml`.
+
+# ------------------------------------
+#               SETUP
+# ------------------------------------
+
+fl:
+  num_rounds: 3
+  num_epochs: 2
+  batch_size: 128
+
+  silos:
+    - dataset: botiot
+      clients: 2/3
+
+attacker:
+  poison_eval: True
+#   poisoning: 1.0-1.0{2}
+#   target: [ Reconnaissance ]
+
+defaults:
+  - _self_ 
+
+  # Data source
+  - dataset: nfv2_sampled
+
+  # Local algorithm
+  - learner: mlp
+
+  # FL architecture / algorithm
+  - archi: trustfids
+
+  # Threat model and partcipant distribution
+  # - scenario/distribution: benign 
+  - scenario/attacker: loud
+  - scenario/target: targeted
+
+# ------------------------------------
+#             EXPERIMENT
+# ------------------------------------
+
+xp:
+  seed: 1138
+  save: False
+
+# ------------------------------------
+#             HARDWARE
+# ------------------------------------
+
+hardware:
+  auto: True
+  cpu_headroom: 0.1  # not used if auto is True
+
+ray:
+  local_mode: False
+  
+# ------------------------------------
+#               HYDRA
+# ------------------------------------
+
+hydra:
+  job:
+    chdir: True
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: "${hydra.job.override_dirname}"

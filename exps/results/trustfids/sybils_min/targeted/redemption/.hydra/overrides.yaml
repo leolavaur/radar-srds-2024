@@ -1,0 +1,5 @@
+- scenario/attacker=redemption
+- scenario/distribution=sybils_min
+- +scenario/target=targeted
+- xp.seed=56
+- fl.drop_class=False

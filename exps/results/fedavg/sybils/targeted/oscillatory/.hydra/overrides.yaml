@@ -1,0 +1,4 @@
+- archi=fedavg
+- +scenario/target=targeted
+- scenario/attacker=oscillatory
+- scenario/distribution=sybils

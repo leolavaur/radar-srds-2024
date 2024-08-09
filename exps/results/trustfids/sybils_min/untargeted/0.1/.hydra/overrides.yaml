@@ -1,0 +1,6 @@
+- archi=trustfids
+- scenario/distribution=sybils_min
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.1
+- xp.seed=56
+- fl.drop_class=False

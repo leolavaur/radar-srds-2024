@@ -1,0 +1,4 @@
+# @package _global_
+
+attacker:
+  poisoning: "0.6"

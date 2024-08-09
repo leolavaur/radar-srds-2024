@@ -1,0 +1,64 @@
+fl:
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  drop_class: false
+  drop_different_classes: true
+  drop_all_class_but_one: false
+  drop_class_nb: 1
+  silos:
+  - dataset: cicids
+    clients: 5
+  - dataset: toniot
+    clients: 5
+  - dataset: botiot
+    clients:
+      benign: 4
+      malicious: 1
+  - dataset: nb15
+    clients: 5
+attacker:
+  poison_eval: true
+  poisoning: '0.4'
+  target: null
+xp:
+  seed: 56
+  save: false
+hardware:
+  auto: true
+  cpu_headroom: 0.1
+dataset:
+  load_data:
+    _target_: trustfids.dataset.nfv2.load_data
+    base_path: ../data/sampled/
+    test_ratio: 0.2
+    common_test: true
+learner:
+  _target_: trustfids.client.learners.MLPPopoola.remote
+archi:
+  strategy:
+    _target_: trustfids.server.strategy.FoolsGold
+    initial_parameters: null
+    num_epochs: ${fl.num_epochs}
+    batch_size: ${fl.batch_size}
+  server:
+    _target_: flwr.server.Server
+  client:
+    _target_: trustfids.client.IDSClient
+baseline:
+  name: FoolsGold
+  description: 'This configuration implements the FoolsGold algorithm, as described
+    in [1]. It uses
+
+    the default client, with a dedicated strategy SimFoolsGold.
+
+
+    [1] C. Fung, C. J. M. Yoon, and I. Beschastnikh, “The limitations of federated
+
+    learning in sybil settings,” in 23rd international symposium on research in attacks,
+
+    intrusions and defenses (RAID 2020), San Sebastian, Oct. 2020, pp. 301–316. [Online].
+
+    Available: https://www.usenix.org/conference/raid2020/presentation/fung
+
+    '

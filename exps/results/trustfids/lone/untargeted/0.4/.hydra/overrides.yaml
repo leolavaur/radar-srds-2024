@@ -1,0 +1,6 @@
+- archi=trustfids
+- scenario/distribution=lone
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.4
+- xp.seed=56
+- fl.drop_class=False

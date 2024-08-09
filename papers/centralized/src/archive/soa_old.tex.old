@@ -1,0 +1,194 @@
+Contain all related works before pruning works that are less relevant for the current contribution. 
+Should be conserved for future reference.
+
+
+
+\section{Related Works}\label{sec:related}
+% - reputation systems X federated learning
+
+% \begin{table*}[]
+%     \centering
+%     \caption{Relevant works}\label{tab:soa}
+%     \begin{tabular}{lcl} 
+%         \toprule
+%         Conference & Paper & Rank \\
+%         \midrule
+%         IEEE Transactions on Network Science and Engineering & \cite{chen_zero_2021}& IF 5.0\\
+%         NDSS & \cite{cao_fltrust_2022} & A* \\
+%         IEEE Transactions on Information Forensics and Security & \cite{ma_shieldfl_2022} & IF 7.1 \\
+%         IEEE Transactions on Dependable and Secure Computing & \cite{zhao_shielding_2020} & IF 6.79 \\
+%         IEEE Wireless Communications & \cite{kang_reliable_2020} & IF 11.98 \\
+%         IEEE International Conference on Communications & \cite{wang_reputation-enabled_2021} & IF 10,06 \\
+%         Asia Conference on Computer and Communications Security & \cite{wang_flare_2022} & IF 4.80 \\
+%         International Conference on Security and Privacy in Communication Systems & \cite{xia_tofi_2021} & IF 1.98 \\
+%         IEEE TRANSACTIONS ON PARALLEL AND DISTRIBUTED SYSTEMS & \cite{ng_reputation-aware_2022} & IF 4.3 \\
+%         \bottomrule
+%     \end{tabular}
+% \end{table*}
+
+%Articles that have approaches that are most similar to us are : 
+%1. \cite{zhao_shielding_2020} for the client-side cross evaluation approach, their goal is to detect label flipping and semantic attacks. They use KDDcup which is old but designed for network intrusion detection.
+
+
+
+\begin{itemize}
+    \item evaluation (\eg distance entre models, comparaison à quoi: global, historique...) 
+    \item réputation 
+    \item aggregation 
+\end{itemize}
+
+% Tool for distance evaluation between two models -> might be moved onto the architecture section  
+Different tools can be used to measure the distance between two models. 
+Cosin similarity have the benefit of evaluating the orientation of an update vector, as many poisoning attacks build  
+% - Euclidian distance 
+% - Cosin similarity 
+% - others ? 
+
+% Secure aggregation in IID-dataset 
+Different means have been used to evaluate the quality of a submitted local model in \gls{fl} for \gls{iid} dataset. 
+Some approaches are based on the existence of a validation data set located on the central server. \cite{xia_tofi_2021, zhou_differentially_2022}. 
+Using the central data set the local models accuracy can be evaluated and reflected in the aggregation weights.
+Also using a trusted data set Cao et al. directly train a model on the central server\cite{cao_fltrust_2022}. 
+They then use cosine similarity to compare local models to the trusted central model, deviants models are assigned a lower trust score and their weight is reduced in the aggregation process.
+Other approaches compare local models between themselves, either with the goal of detecting and evicting outliers or in order to choose a trustworthy local model. \needref %Détection d'outlier
+In \cite{blanchard_machine_2017} Blanchard et al, build Krum a byzantine robust aggregation mechanism that select one local model to be the next global model based on the squared distance of the model compared to a number of others models. %clarifier la méthodo utilisé par Krum
+% \cite{The hidden vulnerability of distributed learning in byzantium,}: comparison to median model
+% En non-IID les médicaments d'IID deviennent des poisons.
+% § on the comparison or election to some source of truth inaplicability for non-IID dataset  
+You et al., however make a convincing case that methods designed for robust aggregation on IID dataset aren't applicable to non-IID dataset.\cite{you_poisoning_2022} 
+This is mainly due to the fact that these methods tend to either elect or compare against a single source of truth that just doesn't exist anymore in non-IID.
+You et al. also show that, worst than just being inefficient, on non-IID settings Krum perform significantly worse than FedAvg. 
+This stays true both in the presence or absence of byzantine nodes. %Important because some mitigation methods, Krum included, under perform compared to FedAvg in the absence of Byzantine Nodes.
+
+
+
+
+% In \cite{ma_shieldfl_2022}, Ma et al. introduce a scheme to identify adversarial submission in heterogeneous homomorphic encrypted data. 
+% Using cosine similarity, they identify the gradient that differ the most from the global model and use it as a baseline for poisonous gradient. 
+% Also using cosine similarity, each gradient is weighted in the aggregation process depending  on its similarity with the poisonous gradient baseline.
+
+
+Some works also try to work on non-IID data set. 
+Similar to us \cite{xia_tofi_2021} prune out local models that make too big of a change and test them before aggregation into the global model. 
+However, instead of delegating the testing to participant they use the strong assumption that the service provider must have a representative data set and can directly use it to verify the local model accuracy.   
+
+Similar to FoolsGold \cite{fung_mitigating_2020}, CONTRA \cite{awan_contra_2021} also use the cosin similarity of the aggregated gradient updates to detect Sybil . 
+It additionally uses a reputation system for clients selection.  
+While it achieves a better attacks detection rate and overall accuracy, there is no change in the methodology. 
+% - Underline some of the limitation of FoolsGold and present better results that them on most . 
+% However there is no change in the underlying detection methodologies results better
+% - pas open source
+
+% Accuracy <90%. 
+\citeauthor{karimireddy_learning_2021} underline the importance of historical data for robust aggregation. 
+They show that deviation small enough to stay under the radar during a single round can end up poisoning the model over the course of multiple rounds. 
+They test multiple robust aggregation scheme and show their exposure to such schemes.
+Moreover those robust aggregation scheme can, in some case, fail to converge even in the absence of byzantine clients.
+Based on those results, \citeauthor{chu_securing_2022} suggest an aggregation scheme based on reputation that take into account historical data.
+% What distance metric do they use ? 
+% What decay function do they use if any ? 
+
+% Positioning on Dirchlet distribtutions. 
+% Other works that use Bayesian based reputation system in \gls{fl} favor binary probability distribution \cite{song_reputation-based_2022,chu_securing_2022}.
+% Since we use continuous evaluations metrics defined over [0,1] in this work, a multivalued probability distribution combined with a discretization of the evaluation offer us a better granularity.
+
+% opening to other methodologies more fit for non-IID 
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Clustering based methodologies
+%%%%%%%%%%%%%%%%%%%%%%%%
+\citeauthor{peri_deep_2020} explored the used of \gls{knn} for poisoning mitigation \cite{peri_deep_2020}. 
+Using L2 norm as a distance measure, class outliers are identified as the points that are the furthest from the class centroid. %class ?
+Outliers are then evicted. 
+This approach show good results when the number of malicious agent is known beforehand. 
+
+To limit this effect \cite{chen_zero_2021} introduce a dynamic cluster split and merge process. % détailler le processsus de création des clusters ?
+Measuring the mean inter cluster dissimilarity as the difference of the L2-norm from each pair of cluster center they compare it to the intra cluster dissimilarity measured as the mean distance between each cluster nodes and the cluster center. 
+Cluster are opportunistically splitted when their own dissimilarity is too high relative to the mean inter cluster dissimilarity. 
+Conversely they are merged when the distance between the center of two cluster is too low relative to the mean inter cluster dissimilarity. 
+
+% TODO PM : rédiger la partie clustering hiérarchique 
+\citeauthor{briggs_federated_2020} make use of  hierarchical clustering to create clusters of participants. 
+In hierarchical clustering, all participant are initially placed in their own cluster, cluster that are the closest to each others are then merged until only cluster that include all participants remain. 
+Using a distance threshold as a stop condition it's possible to create clusters without initially knowing the number of cluster. 
+Additionally, \cite{briggs_federated_2020} experiment L1 norm, L2 norm and cosin similarity as distance metrics and observe faster convergence using L1 distance. 
+% they also identify linkage mechanism as an important hyperparameter. Linkage is the way that two cluster are compared (i.e. distance between centroids, closest points, furthest points) 
+% historical approach 
+
+
+\cite{ouyang_clusterfl_2021} use clusters to obtain better average accuracy results in heterogeneous settings. Inside those cluster additional techniques that discard participant showing to great of a difference or that take too much time to converge are used to reduce convergence time.    
+
+
+% ======================
+% Reputation based relevant works
+% ======================
+
+\paragraph{}{Reputation systems in \gls{fl}}\label{sec:related:reputation}
+
+% ========
+% Choix d'une distribution de dirichlet. 
+% ========
+Several other works use Bayesian probability distribution for \gls{fl}. 
+\cite{song_reputation-based_2022,chu_securing_2022} used Beta probability distribution, 
+
+
+% Phrase sur les différents modes d'évaluation présent (Comparaison de modèles, ...), on pourrait ouvrir içi sur la cross eval mais c'est plutôt quelque chose qu'on abborde dans l'archi.  
+
+% Since we use continuous evaluations metrics defined over [0,1] in this work, a multivalued probability distribution combined with a discretization of the evaluation offer us a better granularity.      
+% As the evaluation metric of a participant is continuous over [0,1] we first discretize $\rece$, the evaluations received by a participant $j$, into the set $\mathcal{E} = {e_1, e_2, \ldots, e_q}$ where $q$ is the number of possible discrete value.
+
+
+% ========
+% Comparaison aux papiers réputation sélectionnés
+% ======== 
+
+% ========
+% Papiers sélectionnés : 
+% wang_novel_2020, wang_reputation-enabled_2021
+% kang_reliable_2020
+% 
+% ========
+\citeauthor{wang_reputation-enabled_2021} evaluate the submitted model by comparing its accuracy with the mean accuracy from others submitted models at the current round, the accuracy of the last global model and the accuracy of a temporary global model for this round \cite{wang_reputation-enabled_2021}.
+The reputation score computed on the client is used for client selections in a first contribution \cite{wang_novel_2020} and model weighting in an extension of their work \cite{wang_reputation-enabled_2021}. 
+Nonetheless, this approach is reliant on the accuracy calculation: it can either be done client-side and self-reported or computed by the server based on a testing data-set. 
+Self reporting isn't acceptable for us: we don't want to trust client side operation.  
+Server side validation is also hard to apply in non-\gls{iid} settings due to the difficulty of creating an exhaustive validation data-set.
+\citeauthor{wang_reputation-enabled_2021} doesn't provide information on where and with what data the accuracy score is computed, also their non-\gls{iid} lag  behind their \gls{iid} evaluation by at least 8.7\% and at most 11.3\% depending on the testing data-set leaving room for improvement in non-\gls{iid} settings \cite{wang_novel_2020}.
+% @Léo peux-tu contrechecker ou et comment ils calculent l'accuracy ? ça me semble énorme mais je n'ai vraiment pas trouvé comment c'est fait dans le papier 
+
+In \cite{kang_reliable_2020} participants, historical interaction behavior and contributions outcome are taken into account to build a multi-weight subjective trust model. 
+Also, a reputation system is designed so that independents task providers can exchange trust information regarding clients.
+As contribution outcome is judged using reject on negative influence and proof of elapsed time, their work is restrained to IID datasets. 
+ While working on non-\gls{iid} \gls{fl} secure aggregation \citeauthor{you_poisoning_2022} make the observation that poisoned model doesn't vary much over time while benign models that initially deviate from the global average tend to converge to the global over time \cite{you_poisoning_2022}. 
+ Leveraging this observation they build a reputation system that take into account the historical variation of the deviation between local model and the global one.   
+% What distance metric do they use ? 
+% What decay function do they use if any ? 
+% Any similarity base ponderation ? 
+
+% ======================
+% Redondant avec la section background, à supprimer ? 
+% ======================
+
+
+% They show 
+% - pb 1 : très sensible à la distribution du bruit : peu ne pas converger quand il n'y  a pas d'acteurs byzantins. 
+% - pb2 : Ces mitigations fonctionnent sur une seule phase d'aggréagation. Sur plusieurs phases il est possible de faire des petites modificaitons de gradiants qui s'accumulent dans le temps.
+
+ 
+
+% Part of existing approaches \cite{Zhou_differentially_2022} rely on shared datasets hosted on the server to evaluate model updates.
+% However, this approach falters against non-IID settings, as no dataset can represent the data of all clients in the same manner.
+% Due to this constraint, and the privacy consideration needed to construct said evaluation dataset, we exclude this approach.
+
+\cite{zhao_shielding_2020} authors also adopt a collaborative cross evaluation strategy. 
+Local models are aggregated into multiple sub models, each of them are then randomly attributed to multiple clients for efficiency validation. In order to also address non-\gls{iid} datasets clients self report the labels on which they have enough data to conduct an evaluation.
+
+This approach limit the network and client resources consumption. 
+For our cross-silo use case where participants are low in number and have dedicated resources for intrusion detection this is less of a concern than in a cross devices or \gls{iot} scenario.
+Underlining the privacy issue that might arise from letting participants access sub models Zhao et al, implement a differential privacy scheme to prevent data inference in the evaluation phase.
+
+% C'est un point qu'il faudra sans doute vérifier / mentionner. L'exposition directe des sous modèles peut-il ouvrir des problématiques d'inférences des données initiales ?
+    
+The review of several surveys \cite{wang_threats_2022,tian_comprehensive_2022,ramirez_poisoning_2022} shows no other approaches in this direction, while \citet{zhao_shielding_2020} prove its relevance.
+The cross-silo constraints (see \cref{sec:problem.usecase}) of the \gls{ids} use case makes cross-evaluation approaches particularly interesting.
+Furthermore, the authors of \cite{guo_robust_2021} show that achieving both, efficient training on non-IID settings and Byzantine-resilient \gls{fl}, is still an open issue.
+This emphasizes the relevance of our work. 

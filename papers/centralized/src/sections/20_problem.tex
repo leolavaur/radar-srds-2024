@@ -1,0 +1,103 @@
+\section{Problem Statement}\label{sec:problem}
+
+% Similar to existing works on byzantine-robust \gls{fl}~\cite{fung_limitations_2020,awan_contra_2021,mao_romoa_2021}, we consider a typical \gls{fl} scenario where a central server $S$ is tasked with aggregating the model updates $\w$ of $n$ participants $\p, i\in \llbracket 1,n \rrbracket$ at each round $r$.
+% We note $P$ and $\W$ the sets of all participants and all local parameters, respectively.
+% Model architecture and hyperparameters are the same among participants (see \Cref{sec:eval.setup.local}), but each owns a local dataset $\d$ that is not shared with the others.
+
+% Note that \citet{mcmahan_communication-efficient_2017} introduce two algorithms for \gls{fl}: \texttt{FedAvg} and \texttt{FedSGD}.
+% The former relies on batching the \gls{sgd} operation on a set of distributed clients, each client performing multiple epochs on its local dataset.
+% The latter implies aggregating gradients before updating the model, and doing so on the server only.
+% Since they are comparable~\cite{mcmahan_communication-efficient_2017,fung_limitations_2020} and similarly represented in the literature, we consider both.
+\subsection{CIDS using Federated Learning}
+\label{sec:problem.cids}
+
+We consider a typical \gls{fl} scenario where a central server $S$ is tasked with aggregating the model updates $\w$ of $n$ participants $\p, i\in \llbracket 1,n \rrbracket$ at each round $r$.
+Participants are entities that oversee an organization's network, which makes them highly available and interested.
+This is analogous to \gls{csfl} settings~\cite{kairouz_advances_2021}, where there are also few participants with consequent quantities of data, and significant computing capabilities.
+%We set the proportion $C$ of selected clients to 1, meaning that all clients contribute to the global model at each round $r$.
+We denote respectively by $P$ and $\W$ the sets of all participants and all local parameters.
+Model architecture and hyperparameters are the same among participants, but each owns a local dataset $\d$ that is not shared with the others.
+
+The distribution of each local dataset $\d$ can vary depending on the hosted services or user behaviors.
+This is typically the case in \gls{csfl} and is referred to as \gls{niid} settings. 
+However, we assume that similarities can exist between participants, for instance between industries of the same domain.
+This is referred to as \emph{practical \gls{niid}} scenarios, as opposed to the \emph{pathological \gls{niid}} settings, where all participants have unique and highly different data-distributions~\cite{huang_personalizedcrosssilofederated_2021}.
+ local dataset $\d$ can vary depending on the hosted services or user behaviors.
+This is typically the case in \gls{csfl} and is referred to as \gls{niid} settings. 
+However, we assume that similarities can exist between participants, for instance between industries of the same domain.
+This is referred to as \emph{practical \gls{niid}} scenarios, as opposed to the \emph{pathological \gls{niid}} settings, where all participants have unique and highly different data-distributions~\cite{huang_personalizedcrosssilofederated_2021}.
+
+For the sake of clarity, we focus on a \gls{nids} use case, where $\d$ is composed of labeled network flows, categorized in two classes: \emph{benign} and \emph{malicious}.
+At each round $r$, participants train a local parametric model, such as a \gls{dnn}, on a binary classification task, \ie predicting each sample's labels.
+This amounts to minimizing a loss function $\mathcal{L}(\w, \Vec{x_j}, \Vec{y_j}), j \in \llbracket 1, |\d| \rrbracket $, where $\Vec{x_j}$ and $\Vec{y_j}$ refer to the sample and its label, respectively.
+To that end, they use a \gls{sgd}-based optimizer to compute the gradients $\nabla \mathcal{L}(\w, \Vec{x_j}, \Vec{y_j})$ and update their new model as $\w[i][r+1] \gets \w - \eta \nabla \mathcal{L}(\w, \Vec{x_j}, \Vec{y_j})$, where the $\eta$ is the learning rate.
+The server then computes the new global model $\wbar[][r]$ as a function of the local models $\{\w \mid i\in \llbracket 1,n \rrbracket\}$, akin to \texttt{FedAvg}.  
+
+
+
+
+\subsection{Threat Model}
+\label{sec:problem.threat}
+
+We consider that participants might upload model updates that would negatively impact the performance of the global model, deliberately or not.
+%
+Indeed, we consider multiple types of malicious actors: external actors altering legitimate clients' data (\ie \emph{compromised}), clients whose local training sets are of poor quality (\ie \emph{honest-but-neglectful}), or clients modifying their own local data on purpose (\ie \emph{malicious}).
+%Since all cases can be modeled with data poisoning, 
+We refer to them as \emph{malicious participants} or \emph{Byzantines}.
+%thereafter.
+
+We consider \emph{gray-box} adversaries, meaning they have the same knowledge as legitimate clients.
+Such information includes the last global models, the used hyperparameters, loss function, and model architecture. 
+We assume that the server can be trusted to perform the aggregation faithfully, and that \gls{fl} guaranties the confidentiality of the local datasets. 
+Attacking the server is out of the scope of this contribution. 
+
+Malicious behavior can be modeled by poisoning attacks, in which an attacker would alter his contribution to impact the performance of the global model.
+The literature distinguishes two classes of poisoning attacks: \textit{data poisoning} and \textit{model poisoning}. 
+In the former case, an attacker can tamper with the training data set, but otherwise faithfully executes its process~\cite{awan_contra_2021,fung_limitations_2020}.
+In the latter case, the attacker directly modifies the model updates sent to the server~\cite{fang_local_2020,tolpegin_data_2020,bhagoji_analyzing_2019}.
+
+In this paper, we focus on data poisoning attacks, as it can effectively model both legitimate participants whose training data has been altered, and malicious participants who deliberately modify their training data.
+These attacks can further be separated into two categories.
+With \emph{targeted poisoning}, an attacker aims at modifying the behavior of the global model when it is subjected to a specific class~\cite{fung_limitations_2020}.
+In \emph{untargeted poisoning}, on the other hand, the attacker tries to impact the model performance uniformly~\cite{cao_fltrust_2022}. %, such as by adding noise to the training data, or completely inverting the labels.
+%
+% \subsubsection{Attackers' Goal}
+% \label{sec:problem.threat.goal}
+%
+An attacker can choose the appropriate attack depending on his objective.
+With targeted poisoning, attackers aim at making a specific type of attack invisible to the \gls{nids}.
+With untargeted attacks, on the other hand, they aim at maximizing the misclassification rate to jeopardize the \gls{nids} performance. %, applying label-flipping to all samples.
+
+
+%We assume that attackers use label-flipping to poison their training and testing datasets.
+%Specifically, they flip the label of the targeted class from \emph{malicious} to \emph{benign}, so it is learned as \emph{benign traffic} by the classification model.
+%With untargeted attacks, they try to cause the highest misclassification rate possible, this compromising the ability of the model to perform.
+
+
+
+% \subsubsection{Attackers' Knowledge and Capabilities}
+% \label{sec:problem.threat.cap}
+% Içi il faut mettre du contenu sur les quantités d'attaquant 
+
+Malicious actors can act alone or be involved in coordinated attacks.
+FoolsGold~\cite{fung_limitations_2020} focuses on Sybil attacks, a specific case of colluding attackers controlled by a single entity.
+Since Sybil attacks are less likely in closed small-scale systems such as \glspl{cids}, we prefer the simpler scenario of \emph{colluding attackers} sharing common goal and means.
+%We prefer the general scenario of \emph{colluding} attackers, where multiple attackers share common goal and means.
+%Given that we consider \emph{Byzantine} attackers with multiple motivations, we test against the worst possible case where these attackers collude towards a common goal. 
+Their number and proportion among benign clients can vary from a single \emph{lone} attacker to them being a majority in the system.% of attackers. 
+
+%Malicious actors can act alone or be involved in coordinated attacks.
+%FoolsGold~\cite{fung_limitations_2020} focuses on the specific case of Sybil attacks~\cite{douceur_sybil_2002}, which implies there are no access control nor interaction costs.
+%Given the specific context of small-scale collaboration, we consider \emph{colluding attackers}, where multiple attackers share common goal and means, even in a closed system.
+%We make no assumption of their number.
+
+
+
+% \subsubsection{Attackers' Behaviors}
+% \label{sec:problem.threat.behave}
+
+Attackers may have varying behaviors, depending on their impact strategy.
+We consider multiple \emph{stealthiness} scenarios, \ie the proportion of the attackers' training set that is poisoned at each round.
+The stealthiness of an attacker over time (\ie rounds) represents its behavior.
+While we consider the clients to remain the same in a collaborative \gls{nids} environment, an attack can be triggered at anytime with any stealthiness.
+

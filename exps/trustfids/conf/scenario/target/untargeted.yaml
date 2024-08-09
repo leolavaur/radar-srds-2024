@@ -1,0 +1,5 @@
+# @package _global_
+
+attacker:
+  target: null
+  poison_eval: True

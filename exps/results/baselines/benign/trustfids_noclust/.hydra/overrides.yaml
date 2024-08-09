@@ -1,0 +1,2 @@
+- scenario=sampled/benign
+- baseline=trustfids_noclust

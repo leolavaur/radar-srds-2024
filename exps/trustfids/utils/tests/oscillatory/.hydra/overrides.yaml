@@ -1,0 +1,3 @@
+- +scenario/target=untargeted
+- scenario/attacker=oscillatory
+- scenario/distribution=sybils

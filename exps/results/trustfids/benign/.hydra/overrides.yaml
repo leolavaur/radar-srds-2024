@@ -1,0 +1,6 @@
+- archi=trustfids
+- scenario/distribution=benign
+- +scenario/target=targeted
+- scenario/attacker=loud
+- xp.seed=56
+- fl.drop_class=False

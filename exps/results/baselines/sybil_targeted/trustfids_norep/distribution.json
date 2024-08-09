@@ -1,0 +1,24 @@
+{
+    "botiot_sampled": [
+        "client_0",
+        "client_1"
+    ],
+    "nb15_sampled": [
+        "client_2",
+        "client_3",
+        "client_4"
+    ],
+    "toniot_sampled": [
+        "client_5",
+        "client_6"
+    ],
+    "cicids_sampled_benign": [
+        "client_7",
+        "client_8"
+    ],
+    "cicids_sampled_attacked": [
+        "attacker_0",
+        "attacker_1",
+        "attacker_2"
+    ]
+}

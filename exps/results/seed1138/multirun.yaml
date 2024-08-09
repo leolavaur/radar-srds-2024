@@ -1,0 +1,228 @@
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${sanitize:${hydra.job.override_dirname}}
+  launcher:
+    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    max_batch_size: null
+    params: null
+  help:
+    app_name: ${hydra.job.name}
+    header: '${hydra.help.app_name} is powered by Hydra.
+
+      '
+    footer: 'Powered by Hydra (https://hydra.cc)
+
+      Use --hydra-help to view Hydra specific help
+
+      '
+    template: '${hydra.help.header}
+
+      == Configuration groups ==
+
+      Compose your configuration from those groups (group=option)
+
+
+      $APP_CONFIG_GROUPS
+
+
+      == Config ==
+
+      Override anything in the config (foo.bar=value)
+
+
+      $CONFIG
+
+
+      ${hydra.help.footer}
+
+      '
+  hydra_help:
+    template: 'Hydra (${hydra.runtime.version})
+
+      See https://hydra.cc for more info.
+
+
+      == Flags ==
+
+      $FLAGS_HELP
+
+
+      == Configuration groups ==
+
+      Compose your configuration from those groups (For example, append hydra/job_logging=disabled
+      to command line)
+
+
+      $HYDRA_CONFIG_GROUPS
+
+
+      Use ''--cfg hydra'' to Show the Hydra config.
+
+      '
+    hydra_help: ???
+  hydra_logging:
+    version: 1
+    formatters:
+      simple:
+        format: '[%(asctime)s][HYDRA] %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      level: INFO
+      handlers:
+      - console
+    loggers:
+      logging_example:
+        level: DEBUG
+    disable_existing_loggers: false
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: simple
+        filename: ${hydra.runtime.output_dir}/${hydra.job.name}.log
+    root:
+      level: INFO
+      handlers:
+      - console
+      - file
+    disable_existing_loggers: false
+  env: {}
+  mode: MULTIRUN
+  searchpath: []
+  callbacks:
+    leo:
+      _target_: trustfids.utils.callbacks.MattermostCallback
+      url: null
+  output_subdir: .hydra
+  overrides:
+    hydra:
+    - hydra.mode=MULTIRUN
+    task:
+    - archi=foolsgold,trustfids,fedavg
+    - scenario/distribution=sybils_single_cluster
+    - +scenario/target=targeted
+    - scenario/attacker=loud
+  job:
+    name: __main__
+    chdir: true
+    override_dirname: +scenario/target=targeted,archi=foolsgold,trustfids,fedavg,scenario/attacker=loud,scenario/distribution=sybils_single_cluster
+    id: ???
+    num: ???
+    config_name: config
+    env_set: {}
+    env_copy: []
+    config:
+      override_dirname:
+        kv_sep: '='
+        item_sep: ','
+        exclude_keys: []
+  runtime:
+    version: 1.3.2
+    version_base: '1.3'
+    cwd: /home/pm/trust-fids/exps
+    config_sources:
+    - path: hydra.conf
+      schema: pkg
+      provider: hydra
+    - path: trustfids.conf
+      schema: pkg
+      provider: main
+    - path: ''
+      schema: structured
+      provider: schema
+    output_dir: ???
+    choices:
+      scenario/target: targeted
+      scenario/attacker: loud
+      scenario/distribution: sybils_single_cluster
+      archi: trustfids
+      archi/client: xevalclient
+      archi/strategy: fedxeval
+      archi/server: xevalserver
+      learner: mlp
+      dataset: nfv2_sampled
+      hydra/env: default
+      hydra/callbacks: null
+      hydra/job_logging: default
+      hydra/hydra_logging: default
+      hydra/hydra_help: default
+      hydra/help: default
+      hydra/sweeper: basic
+      hydra/launcher: basic
+      hydra/output: default
+  verbose: false
+fl:
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  drop_class: true
+  silos:
+  - dataset: botiot
+    clients:
+      benign: 4
+      malicious: 6
+attacker:
+  poison_eval: true
+  poisoning: '1.0'
+  target:
+  - Reconnaissance
+xp:
+  seed: 1138
+  save: false
+hardware:
+  auto: true
+  cpu_headroom: 0.1
+dataset:
+  load_data:
+    _target_: trustfids.dataset.nfv2.load_data
+    base_path: ../data/sampled/
+    test_ratio: 0.2
+    common_test: true
+learner:
+  _target_: trustfids.client.learners.MLPPopoola.remote
+archi:
+  server:
+    _target_: trustfids.server.server.XevalServer
+  strategy:
+    _target_: trustfids.server.strategy.FedXeval
+    num_epochs: ${fl.num_epochs}
+    batch_size: ${fl.batch_size}
+    initial_parameters: null
+    clustering_metric: f1
+    reputation_metric: f1
+    evaluation_metric: f1
+    clustering_kwargs:
+      input_type: xevals
+      threshold_type: mean
+      alpha: 1.25
+      distance_type: cosin_sim
+      log: true
+    reputation_system:
+      _target_: trustfids.reputation.reput.DirichletReputationEnvironment
+      class_nb: 10000
+      lmbd: 0.3
+  client:
+    _target_: trustfids.client.base.XevalClient
+    self_evaluation: true
+  name: Trust-FIDS
+  description: "This configuration of implements Trust-FIDS, with the appropriate\
+    \ components:\n  * Cross-evaluation enabled server and client\n  * The cross-evaluation\
+    \ strategy\n\nThis configuration can then be used with any combination of scenario,\
+    \ learner, and\ndataset. \n"

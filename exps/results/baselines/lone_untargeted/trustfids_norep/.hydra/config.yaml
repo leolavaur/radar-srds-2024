@@ -1,0 +1,64 @@
+fl:
+  num_clients: 10
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  silos:
+  - path: ../data/sampled/botiot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/nb15_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/toniot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/untargeted/cicids_sampled_benign.csv.gz
+    type: benign
+  - path: ../data/sampled/untargeted/cicids_sampled_attacked.csv.gz
+    type: malicious
+  distribution:
+  - 2
+  - 3
+  - 2
+  - 2
+  - 1
+client:
+  val_ratio: 0.1
+  _target_: trustfids.client.client.XevalClient
+  self_evaluation: true
+xp:
+  seed: 1138
+  save: false
+hardware:
+  cpu_headroom: 0.1
+server:
+  _target_: trustfids.server.server.XevalServer
+strategy:
+  _target_: trustfids.server.strategy.SimFedXeval
+  num_epochs: ${fl.num_epochs}
+  batch_size: ${fl.batch_size}
+  initial_parameters: null
+  clustering_metric: null
+  reputation_metric: null
+  clustering_kwargs:
+    threshold_type: mean
+  reputation_system: null
+  evaluation_metric: f1
+baseline:
+  name: Trust-FIDS (no reputation)
+  description: 'This baseline implements Trust-FIDS, but without the reputation system.
+    It is used as
+
+    a baseline to study the impact of Trust-FIDS''s reputation system, both in terms
+    of
+
+    performance and resilience to attacks.
+
+    '
+scenario:
+  name: One untargeted attacker
+  datasize: sampled
+  description: 'This scenario considers that one lone attacker is poluting its dataset
+    with with all
+
+    kinds of attacks.
+
+    '

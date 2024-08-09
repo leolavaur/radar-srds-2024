@@ -1,0 +1,6 @@
+# @package _global_
+hydra:
+  callbacks:
+    leo:
+      _target_: trustfids.utils.callbacks.MattermostCallback
+      url: null

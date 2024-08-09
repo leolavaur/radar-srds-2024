@@ -1,0 +1,3 @@
+- scenario/distribution=lone
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.4

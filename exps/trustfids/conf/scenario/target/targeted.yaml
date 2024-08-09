@@ -1,0 +1,5 @@
+# @package _global_
+
+attacker:
+  target: [ Reconnaissance ]
+  poison_eval: True

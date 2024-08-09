@@ -1,0 +1,14 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: toniot
+      clients: 8
+    - dataset: botiot
+      clients: 4
+    - dataset: nb15
+      clients: 8
+  drop_class : True
+  drop_different_classes : True
+  drop_class_nb : 1
+  

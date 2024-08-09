@@ -1,0 +1,228 @@
+{
+    "attacker_0": {
+        "silo_name": "cicids_sampled_attacked",
+        "train_set": {
+            "num_samples": 400000,
+            "classes": {
+                "Benign": 352225,
+                "DDoS": 29401,
+                "DoS": 10269,
+                "Bot": 3054,
+                "Brute Force": 2575,
+                "Infilteration": 2470,
+                "injection": 6
+            }
+        },
+        "test_set": {
+            "num_samples": 100000,
+            "classes": {
+                "Benign": 88057,
+                "DDoS": 7350,
+                "DoS": 2567,
+                "Bot": 763,
+                "Brute Force": 644,
+                "Infilteration": 618,
+                "injection": 1
+            }
+        }
+    },
+    "client_0": {
+        "silo_name": "botiot_sampled",
+        "train_set": {
+            "num_samples": 1427,
+            "classes": {
+                "Benign": 1427
+            }
+        },
+        "test_set": {
+            "num_samples": 100000,
+            "classes": {
+                "DDoS": 48461,
+                "DoS": 44109,
+                "Reconnaissance": 7058,
+                "Benign": 367,
+                "Theft": 5
+            }
+        }
+    },
+    "client_1": {
+        "silo_name": "botiot_sampled",
+        "train_set": {
+            "num_samples": 1427,
+            "classes": {
+                "Benign": 1427
+            }
+        },
+        "test_set": {
+            "num_samples": 100000,
+            "classes": {
+                "DDoS": 48564,
+                "DoS": 44349,
+                "Reconnaissance": 6736,
+                "Benign": 347,
+                "Theft": 4
+            }
+        }
+    },
+    "client_2": {
+        "silo_name": "nb15_sampled",
+        "train_set": {
+            "num_samples": 256020,
+            "classes": {
+                "Benign": 256020
+            }
+        },
+        "test_set": {
+            "num_samples": 66666,
+            "classes": {
+                "Benign": 63911,
+                "Exploits": 908,
+                "Fuzzers": 663,
+                "Generic": 454,
+                "Reconnaissance": 386,
+                "DoS": 161,
+                "Analysis": 70,
+                "Backdoor": 57,
+                "Shellcode": 50,
+                "Worms": 6
+            }
+        }
+    },
+    "client_3": {
+        "silo_name": "nb15_sampled",
+        "train_set": {
+            "num_samples": 256020,
+            "classes": {
+                "Benign": 256020
+            }
+        },
+        "test_set": {
+            "num_samples": 66666,
+            "classes": {
+                "Benign": 64043,
+                "Exploits": 884,
+                "Fuzzers": 582,
+                "Generic": 480,
+                "Reconnaissance": 349,
+                "DoS": 157,
+                "Backdoor": 73,
+                "Analysis": 59,
+                "Shellcode": 35,
+                "Worms": 4
+            }
+        }
+    },
+    "client_4": {
+        "silo_name": "nb15_sampled",
+        "train_set": {
+            "num_samples": 256020,
+            "classes": {
+                "Benign": 256020
+            }
+        },
+        "test_set": {
+            "num_samples": 66666,
+            "classes": {
+                "Benign": 64060,
+                "Exploits": 845,
+                "Fuzzers": 630,
+                "Generic": 461,
+                "Reconnaissance": 335,
+                "DoS": 173,
+                "Analysis": 65,
+                "Backdoor": 55,
+                "Shellcode": 39,
+                "Worms": 3
+            }
+        }
+    },
+    "client_5": {
+        "silo_name": "toniot_sampled",
+        "train_set": {
+            "num_samples": 143847,
+            "classes": {
+                "Benign": 143847
+            }
+        },
+        "test_set": {
+            "num_samples": 100000,
+            "classes": {
+                "Benign": 36117,
+                "scanning": 22194,
+                "xss": 14479,
+                "DDoS": 11944,
+                "password": 6790,
+                "DoS": 4180,
+                "injection": 4139,
+                "Backdoor": 93,
+                "mitm": 43,
+                "ransomware": 21
+            }
+        }
+    },
+    "client_6": {
+        "silo_name": "toniot_sampled",
+        "train_set": {
+            "num_samples": 143847,
+            "classes": {
+                "Benign": 143847
+            }
+        },
+        "test_set": {
+            "num_samples": 100000,
+            "classes": {
+                "Benign": 35807,
+                "scanning": 22418,
+                "xss": 14568,
+                "DDoS": 12030,
+                "password": 6813,
+                "DoS": 4231,
+                "injection": 3977,
+                "Backdoor": 96,
+                "mitm": 44,
+                "ransomware": 16
+            }
+        }
+    },
+    "client_7": {
+        "silo_name": "cicids_sampled_benign",
+        "train_set": {
+            "num_samples": 176136,
+            "classes": {
+                "Benign": 176136
+            }
+        },
+        "test_set": {
+            "num_samples": 50000,
+            "classes": {
+                "Benign": 44141,
+                "DDoS": 3633,
+                "DoS": 1234,
+                "Bot": 387,
+                "Brute Force": 311,
+                "Infilteration": 294
+            }
+        }
+    },
+    "client_8": {
+        "silo_name": "cicids_sampled_benign",
+        "train_set": {
+            "num_samples": 176136,
+            "classes": {
+                "Benign": 176136
+            }
+        },
+        "test_set": {
+            "num_samples": 50000,
+            "classes": {
+                "Benign": 43927,
+                "DDoS": 3728,
+                "DoS": 1314,
+                "Bot": 369,
+                "Brute Force": 350,
+                "Infilteration": 310,
+                "injection": 2
+            }
+        }
+    }
+}

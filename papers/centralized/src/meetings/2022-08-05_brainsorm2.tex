@@ -1,0 +1,61 @@
+Système de réputation pour federated learning. 
+
+
+Caractéristiques : 
+
+### local trust / efficiency 
+- Pas de votes mais des résultats d'efficacité continus pas discrets (aire sous la courbe roc à maximiser ?)	
+	- Potentiellement des faux négatifs qui se comportent un peu comme des actions positives 
+	- Types d'actions : 
+		- True positive : récompense
+		- False positive : pénalisation ? 
+		- Faux négatifs : neutre, le modèle n'est pas fort mais n'est pas nocif non plus : peut susceptible d'arriver le modèle ne sera pas forcément remonté si il ne fait rien 
+		- True négative comportement nominal, neutre
+
+- Clustering : on mesure l'affinité que les clients ont entre eux ou celle qu'ils ont avec le modèle d'un "cluster" ? 
+	
+		
+### Aggrégation 
+- Aggrégation des résultats, notion de poids : 
+	- Les clients en dehors du cluster ont un poids de 0 (ou très faible ?)
+	- A l'intérieur du cluster toutes les contributions ne se valent pas forcément, on peut prendre en compte "l'apport en efficacité" pour augmenter le poids (ex: aire sous la courbe roc / aire de l'ensemble de des clients du cluster ?)  
+		- Risque de converger vers un modèle unique ?
+  
+#### normalization 
+- Dépend de la manière dont est constitué le modèle global.
+
+
+### Trust propagation 
+	non traité dans la contrib 1
+		
+### Trust decay : 
+	- ré-évaluation périodique de l'appartenance des clients à leur cluster, au moins pour ceux qui n'auraient pas de cluster. 
+
+### Nouvaux entrants :
+	- Hors du scope de la contribution 1, les participants sont connus et identifiés.
+	
+### Quand est-ce que c'est le bon moment pour fusionner/séparer des cluster ? 
+	- possible de ne pas traiter cela 
+	- comparaison ponctuelle des éléments d'un cluster avec d'autres clusters
+	  
+### Collaboration incentive 
+: federated learning, les participants reçoivent un modèle consolidé en retour de leur contribution.
+	- Prevent free loading
+		-> non adressé dans la collab 1 du fait du modèle de menace. 
+
+### Détection de vote malveillants 
+écarté du fait de l'architecture
+	
+## Hypothèses de travail contribution 1 : 
+	- Les participants sont connus d'avance et identifiés
+		- Problématiques d'entrée de nouveaux acteurs écartés en contrib 1.
+	-Le modèle d'attaque est curieux et honnête, les acteurs peuvent être compromis mais sont de bonne foi
+ 
+## Hypothèses de travail 
+
+
+Est-ce que le modèle global est aggrégé de manière régulière/planifié avec des apports de l'ensemble des participants en même temps ou 
+Dès qu'un client à des informations intéressantes il remonte son modèle ? 
+Je ne connais pas vraiment le processus d'aggrégation.   
+Peut-être sra-t-il intéressant à un stade de mesure l'overhead en communications 
+

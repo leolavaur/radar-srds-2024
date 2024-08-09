@@ -1,0 +1,5 @@
+- archi=trustfids
+- fl.drop_class=False
+- scenario/distribution=single_cluster
+- +scenario/target=targeted
+- scenario/attacker=loud

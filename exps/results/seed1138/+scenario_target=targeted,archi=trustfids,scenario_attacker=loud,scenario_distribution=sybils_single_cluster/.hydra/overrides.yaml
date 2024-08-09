@@ -1,0 +1,4 @@
+- archi=trustfids
+- scenario/distribution=sybils_single_cluster
+- +scenario/target=targeted
+- scenario/attacker=loud

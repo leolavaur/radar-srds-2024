@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "fl_ids"
+version = "0.1.0"
+description = "Code for BertoliEFC2022 (https://github.com/c2dc/fl-unsup-nids)"
+authors = ["Léo Lavaur <leo.lavaur@imt-atlantique.fr>"]
+license = "Original"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = "~3.10.7"
+flwr = "0.19.0"
+keras = "2.9.0"
+numpy = "^1.23.5"
+pandas = "1.4.3"
+scikit-learn = "~1.1.1"
+tensorflow = "2.9.1"
+# EFC-Package is repackaged from source, converted to Poetry, and then build to
+# a python wheel
+efc = { file = "../../lib/efc/efc-0.1.0-cp310-cp310-manylinux_2_35_x86_64.whl" }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

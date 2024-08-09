@@ -1,0 +1,4 @@
+- archi=fedavg
+- scenario/distribution=single_cluster/benign_botiot
+- xp.seed=56
+- fl.drop_class=False

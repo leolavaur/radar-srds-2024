@@ -1,0 +1,17 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS (no reputation)
+  description: |
+    This baseline implements Trust-FIDS, but without the reputation system. It is used as
+    a baseline to study the impact of Trust-FIDS's reputation system, both in terms of
+    performance and resilience to attacks.
+
+strategy:
+  reputation_system: null
+
+defaults:
+  - /archi: trustfids
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_

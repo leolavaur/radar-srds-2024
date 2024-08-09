@@ -1,0 +1,10 @@
+{
+    "latex-workshop.latex.outDir": "%DIR%/../build",
+    "latex-workshop.latex.jobname": "main",
+    "latex-workshop.latex.external.build.command": "make",
+    "latex-workshop.latex.external.build.args": [
+        "-f",
+        "%DIR%/../Makefile",
+    ],
+    "latex-workshop.latex.autoBuild.run": "onSave"
+}

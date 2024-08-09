@@ -1,0 +1,16 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: cicids
+      clients: 3/2
+    - dataset: toniot
+      clients: 5
+    - dataset: botiot
+      clients: 5
+    - dataset: nb15
+      clients: 5
+
+attacker:
+  target: [ "Brute Force" ]
+  poison_eval: True

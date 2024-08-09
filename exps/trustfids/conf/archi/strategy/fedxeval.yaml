@@ -1,0 +1,30 @@
+---
+_target_: trustfids.server.strategy.FedXeval
+
+num_epochs: "${fl.num_epochs}"
+batch_size: "${fl.batch_size}"
+
+initial_parameters: null
+
+clustering_metric: "f1"
+reputation_metric: "f1"
+
+evaluation_metric: "f1"
+
+clustering_kwargs: 
+  # input_type: "xevals" # "xevals" or "models"
+  # threshold_type: ""
+  # distance_type: "euclidean" # distance_type: "cosin_sim" or "euclidean", defaults to "euclidean"
+  
+  # temporary settings for "perfect" clustering
+  input_type: "xevals"
+  threshold_type: "mean"
+  alpha: 1.25
+  distance_type: "cosin_sim"
+  log: true
+
+
+reputation_system:
+  _target_: trustfids.reputation.reput.DirichletReputationEnvironment
+  class_nb: 10000
+  lmbd: 0.3

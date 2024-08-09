@@ -1,0 +1,4 @@
+- strategy=simfedxeval
+- server=xevalserver
+- client=xevalclient
+- clustering.threshold_type=mean

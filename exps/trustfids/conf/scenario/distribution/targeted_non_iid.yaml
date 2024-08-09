@@ -1,0 +1,18 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: toniot
+      clients: 9/4
+    - dataset: botiot
+      clients: 4
+    - dataset: nb15
+      clients: 8
+  drop_all_class_but_one : True
+  drop_different_classes : True
+  drop_class : True
+  
+attacker:
+  poison_eval: True
+  target: [ "xss" ]
+  

@@ -1,0 +1,48 @@
+
+Objectif : 
+éclaircir des interrogations sur : 
+- le jeu de données
+- l'algorithme de machine learning utilisé pour entrainer le modèle localement 
+- le choix de la mesure de distance
+- la méthode d'aggrégation des modèle locaux vers un modèle global
+
+
+## Jeu de donnée utilisé : 
+- Dans l'optique du cas d'usage capturer un pcap puis le rafiner pour voir quels features sont transposables à d'autres voisins (les @ips par exemple ne sont pas forcément intéressantes car difficilement transposables)
+- Concètement choix du dataset CIC-IDS 2017, regroupe des network flow séquentiel avec des feature temporelles
+	- labellisé avec des classes d'attaques initiallement générées
+	- modèle déjà partitionné avec plusieurs participants
+- Objectif initial de labellisation binaire (ce n'est pas le coeur de la contribution)
+- Modélisation d'erreurs de classification par introduction d'attaques dans le comportement nominal de certains acteurs
+
+## Choix de l'algorithme de classification : 
+Réseau de neuronne & réduction feature car : 
+- Bonne performances dans la litérature review par Léo
+- Pas de problématique de ressources très limitées
+- Granularité dans les informations partagées en fonction des couches que l'on choisi de partager (données plus explicite dans les couches primaire du modèle) 
+
+## Mesure de distance :
+Dépend du modèle partagé (Choix différent si c'est une matrice de poid ou l'arbre d'une random forest). Dans le cas d'utilisation retenu le modèle partagé est une matrice de poids. 
+- Euclidian distance 
+- Cosin similarity 
+Les poids convergent rapidement même sur les dernières couches, des données proches donnent des modèles proches. 
+
+## Aggrégation : 
+FedAvg : moyenne pondérée sur la taille des datasets locaux.
+
+Test : 
+- Varier la taille des data sets des participants. 
+
+Evaluation du modèle : 
+Accuracy (une métrique parmi d'autres)
+Temps de convergence du modèle
+Comparaison avec une approche centralisé en benchmark pour mesurer la perte liée à la fédération
+
+
+Discussion autour des méthodes de clustering : 
+Orienté distance / nombre de clusters :ex k-means : création d'un nombre arbitraire et pré-choisis de clusters, pas de garantie concernant la distance des éléments. 
+	- Pas possible de faire du orienté distance sans fixer le nombre de cluster (garantie de distance vis à vis du centre du cluster et pas de nombre de cluster ?)
+Orienté densité : DBscan, il existe un chemin dense qui relie tout les points du cluster (pas de garantie sur la distance entre les points les plus éloignés du cluster).  
+
+Question au sujet des outils de stats qui pourrait exister pour faciliter le federated learning : 
+- Discussions autour du bagging et du boosting qui permettent d'entrainer des modèles sur des partitions du jeu de donnée et de les aggréger via vote majoritaire. 

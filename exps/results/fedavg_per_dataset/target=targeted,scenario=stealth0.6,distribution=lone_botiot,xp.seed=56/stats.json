@@ -1,0 +1,117 @@
+{
+    "attacker_000": {
+        "silo_name": "botiot",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "DDoS": 77711,
+                "DoS": 70733,
+                "Reconnaissance": 10930,
+                "Benign": 620,
+                "Theft": 6
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "DDoS": 97025,
+                "DoS": 88458,
+                "Reconnaissance": 13794,
+                "Benign": 714,
+                "Theft": 9
+            }
+        }
+    },
+    "client_000": {
+        "silo_name": "botiot",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "DDoS": 77241,
+                "DoS": 71301,
+                "Reconnaissance": 10903,
+                "Benign": 547,
+                "Theft": 8
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "DDoS": 97025,
+                "DoS": 88458,
+                "Reconnaissance": 13794,
+                "Benign": 714,
+                "Theft": 9
+            }
+        }
+    },
+    "client_001": {
+        "silo_name": "botiot",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "DDoS": 77552,
+                "DoS": 70753,
+                "Reconnaissance": 11102,
+                "Benign": 585,
+                "Theft": 8
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "DDoS": 97025,
+                "DoS": 88458,
+                "Reconnaissance": 13794,
+                "Benign": 714,
+                "Theft": 9
+            }
+        }
+    },
+    "client_002": {
+        "silo_name": "botiot",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "DDoS": 77734,
+                "DoS": 70539,
+                "Reconnaissance": 11176,
+                "Benign": 545,
+                "Theft": 6
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "DDoS": 97025,
+                "DoS": 88458,
+                "Reconnaissance": 13794,
+                "Benign": 714,
+                "Theft": 9
+            }
+        }
+    },
+    "client_003": {
+        "silo_name": "botiot",
+        "train": {
+            "num_samples": 160000,
+            "classes": {
+                "DDoS": 77863,
+                "DoS": 70505,
+                "Reconnaissance": 11067,
+                "Benign": 558,
+                "Theft": 7
+            }
+        },
+        "test": {
+            "num_samples": 200000,
+            "classes": {
+                "DDoS": 97025,
+                "DoS": 88458,
+                "Reconnaissance": 13794,
+                "Benign": 714,
+                "Theft": 9
+            }
+        }
+    }
+}

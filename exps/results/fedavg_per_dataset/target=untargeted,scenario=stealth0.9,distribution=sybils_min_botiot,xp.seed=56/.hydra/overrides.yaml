@@ -1,0 +1,6 @@
+- archi=fedavg
+- scenario/distribution=/single_cluster/sybils_min_botiot
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.9
+- xp.seed=56
+- fl.drop_class=False

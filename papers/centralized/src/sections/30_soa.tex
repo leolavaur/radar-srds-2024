@@ -1,0 +1,156 @@
+\section{Related Work}\label{sec:related}
+%This section details the key works that motivated our approach and details how we differ from them.
+
+\subsection{Byzantine-resilient Federated Learning}\label{sec:countermeasures}
+% %Different means have been used to evaluate the quality of a submitted local model. 
+% In \gls{iid} settings, comparison between models is generally an option to detect poisoning attacks, whether it is between the locals models~\cite{blanchard_machine_2017,cao_fltrust_2022}, with a reference model~\cite{xia_tofi_2021, zhou_differentially_2022}, or validated against a centralized dataset~\cite{cao_fltrust_2022}. 
+% For instance, \citet{blanchard_machine_2017} build Krum, a Byzantine-robust aggregation mechanism that selects one local model to be the next global model based on its proximity with other participants models.
+% Also working with models similarity, \citet{cao_fltrust_2022} directly train a model on the central server and then compare this model with other participants' local models using cosine similarity. 
+% Based on the results, they reduce the weight of participants that deviate the most from the central server model. 
+Assessing the quality of a submitted local model can be achieved in various ways.
+Indeed, given gls{iid} settings, comparison between models allows to detect poisoning attacks. 
+Comparison can be achieved with each other~\cite{blanchard_machine_2017,cao_fltrust_2022} or with a reference model~\cite{xia_tofi_2021, zhou_differentially_2022}, or validated against a centralized dataset~\cite{cao_fltrust_2022}. 
+
+Nonetheless, given \gls{niid} settings, \citet{you_poisoning_2022} show these aggregation methods are inefficient.   
+Indeed, these methods rely on a single source of truth that may be known beforehand~\cite{cao_fltrust_2022}, or elected among participants~\cite{blanchard_machine_2017}.
+However, by definition, this single source of truth does not exist in \gls{niid} datasets. 
+To circumvent this issue, \texttt{FoolsGold} and \texttt{CONTRA}~\cite{fung_limitations_2020,awan_contra_2021} assume that sybils share a common goal, and thus produce similar model updates allowing to distinguished them from benign participants.
+Similar participants are classified as sybils using the cosine similarity between gradient updates, and reduce their weight in the final aggregation. 
+However, while this mitigation strategy works when multiple attackers collaborate, it fails at identifying lone attackers.
+These approaches are also well suited for pathological \gls{niid} scenarios, where all participants are significantly different.
+Since practical \gls{niid} settings imply that similar participants can exist, benign participants could be identified as sybils.
+%Additionally, we show in the \nameref{sec:eval.results} section (\ref{sec:eval.results}) that it tends to identify honest participants sharing similar data as Sybil.
+
+
+% This is the case for \texttt{FoolsGold} and \texttt{CONTRA} whose approach is detailed in the \Cref{sec:related}
+% This is the case for FoolsGold and CONTRA, both detect Sybil attacks based on the cosine similarity of malicious participants gradient updates \cite{fung_limitations_2020,awan_contra_2021}. 
+% Their base assumption is that honest participants have different training datasets that result in different gradient updates, while Sybil participants work towards a common goal and will produce similar updates. 
+% The learning rate of similar participants is reduced to limit their impact on the global model aggregation. 
+
+%%%%%%%
+% Shielding collaborative 
+%%%%%%%
+
+% - dont work on supervised learning 
+% - open the way to abusive report 
+% - Reviewed some survey, no other similar approaches.
+% - Ils aggrègent un ou plusieurs modèles ? 
+
+\citet{zhao_shielding_2020} take a different approach and rely on client-side evaluation.  
+Local models are aggregated into multiple sub models, which are then randomly attributed to multiple clients for efficiency validation. 
+To also address \gls{niid} datasets, clients self-report the labels on which they have enough data to conduct an evaluation. 
+While this self-reporting limits the network and client resources consumption, abusive self-reporting is possible. 
+Nevertheless, directly leveraging the participant datasets for evaluation removes the need for a single exhaustive source of truth. 
+Resource consumption is also less of an issue in our cross-silo use case: we feature fewer participants, and they have dedicated resources.
+% Expliciter que nous faisons une cross évaluation totale ? 
+% However, we didn't identify other attempts in this direction while reviewing several model poisoning surveys~\cite{wang_threats_2022,tian_comprehensive_2022,ramirez_poisoning_2022}. 
+
+\subsection{Clustered Federated Learning}
+
+\Gls{niid} data can also be regarded as heterogeneous data distribution that are regrouped together. 
+Following this idea, some works~\cite{peri_deep_2020,briggs_federated_2020,ouyang_clusterfl_2021,ye_pfedsa_2023} try to group participants sharing similarities. 
+%This can be done either for performance reasons: outliers that don't fit in any group slow down the convergence~\cite{ye_pfedsa_2023}; or to detect poisoning: outliers might be poisoned models~\cite{peri_deep_2020}. 
+The purpose of this approach is twofold. First, from a performance perspective, outliers that do not fit in any group slow down the convergence~\cite{ye_pfedsa_2023}. Second, considering outliers as poisoned models~\cite{peri_deep_2020} allows detecting poisoning.
+Since the effective number of clusters is usually unknown, hierarchical clustering is a common way to create appropriate clusters~\cite{briggs_federated_2020,ye_pfedsa_2023}. 
+
+Similar to \thecontrib, \citet{ye_pfedsa_2023} create clusters of participants based on cosine similarity using hierarchical clustering and then use this similarity to weight participants. 
+%Unlike our approach where \gls{niid} data come from different datasets, their \gls{niid} data is composed of an assembly of classes from a single dataset. 
+%This choice make it possible to handpick a different hierarchical clustering threshold for each dataset, which cannot be done in our configuration. 
+Both approaches differ on their goal and validation.  
+Indeed, \thecontrib aims at handling data poisoning while \citet{ye_pfedsa_2023} aims at gathering similar clients to improve FL performance.
+In addition, \citet{ye_pfedsa_2023} validation relies on \gls{niid} data generated from the different classes of a single dataset. 
+The hierarchical clustering threshold can thus be tuned manually for each tested dataset. 
+On the contrary, \thecontrib validation is achieved against different datasets within the same experiment, preventing per dataset manual tuning. 
+%Additionally, since their motivation is to increase the performance in heterogeneous distribution, they don't test their algorithm against model poisoning, which we do. 
+%Finally,~\citet{ye_pfedsa_2023} approach is not designed to handle data poisoning.
+
+% , it is exposed in \Cref{fig:hierarchical_clustering} and in \Cref{alg:cluster}. 
+% Basically, after placing each participant in their own cluster, the closest clusters are iteratively merged until a pre-defined distance threshold is met. 
+% Several metrics can \cite{briggs_federated_2020} experiment L1 norm, L2 norm and cosin similarity as distance metrics and observe faster convergence using L1 distance. 
+% \cite{ouyang_clusterfl_2021} use clusters to obtain better average accuracy results in heterogeneous settings. Inside those cluster additional techniques that discard participant showing to great of a difference or that take too much time to converge are used to reduce convergence time.    
+
+\subsection{Reputation Systems for Federated Learning}
+\label{sec:bg.trust}
+
+Reputation systems subjectively assess participants' ability to perform a task based on past interactions.
+%The first main use case for reputation in \gls{fl} is to select reliable clients for the next round \cite{kang_reliable_2020, awan_contra_2021, tan_reputation-aware_2022}.
+%% For this reason, several \gls{fl} approaches working on wireless network topologies use reputation\cite{kang_reliable_2020,wang_novel_2020,wang_reputation-enabled_2021,alkhalidy_new_2022}.
+\gls{fl} leverages reputation systems in three different ways.
+Some approaches~\cite{kang_reliable_2020, awan_contra_2021, tan_reputation-aware_2022} rely on reputation to select reliable clients for the next round.
+Others leverage reputation to weight local models during the aggregation process~\cite{wang_flare_2022, wang_reputation-enabled_2021}: the higher the reputation, the heavier the local model contributes to the aggregated model.
+Some will even go so far as to discard contributions when the author's reputation is too low.
+%The second main \gls{fl} usage for trust and reputation system is to weight local models during the aggregation process.  
+%Typically, local models from clients with higher reputation are aggregated with an increased weight, while models coming from clients with lower reputation have a lower weight or are even discarded \cite{wang_flare_2022, wang_reputation-enabled_2021}.
+%
+%Another possible usage of \gls{fl} for reputation system is to track clients' contributions over time \cite{kang_reliable_2020, wang_reputation-enabled_2021}. 
+%As \citet{karimireddy_learning_2021} underline, malicious incremental changes can be small enough to be undetected in a single round but still eventually add up enough to poison the global model over the course of multiple rounds \cite{karimireddy_learning_2021}.
+Finally, as shown by~\citet{karimireddy_learning_2021}, small malicious incremental changes can be small enough to be undetected in a single round but still eventually add up enough to poison the global model over the course of multiple rounds. 
+Reputation system's ability to track clients' contributions over time~\cite{kang_reliable_2020, wang_reputation-enabled_2021} can be used as a countermeasure to these attacks. 
+
+% Ajouter un paragraphe sur CONTRA
+ 
+% \citeauthor{karimireddy_learning_2021} also show that multiple \gls{fl} robust aggregation algorithm, such as, Krum \cite{blanchard_machine_2017} and trimmed-mean \cite{yin_byzantine-robust_2018}, are susceptible to historical attacks.
+% \citet{chu_securing_2022} suggest that reputation systems can be used to account for these historical variations. 
+
+
+% ======================
+% Reputation based relevant works
+% ======================
+
+
+% Phrase sur les différents modes d'évaluation présent (Comparaison de modèles, ...), on pourrait ouvrir içi sur la cross eval mais c'est plutôt quelque chose qu'on abborde dans l'archi.  
+
+% Since we use continuous evaluations metrics defined over [0,1] in this work, a multivalued probability distribution combined with a discretization of the evaluation offer us a better granularity.      
+% As the evaluation metric of a participant is continuous over [0,1] we first discretize $\rece$, the evaluations received by a participant $j$, into the set $\mathcal{E} = {e_1, e_2, \ldots, e_q}$ where $q$ is the number of possible discrete value.
+%  and the Dirichlet distribution offer a multivalued probability distribution \cite{josang_dirichlet_2007}. 
+
+
+
+%% Such participants, called \emph{sybils}, tend to show a degree of similarity that is suspicious when compared to other \gls{niid} participants~\cite{fung_limitations_2020}. 
+% Since it detects similarities between attackers, this mitigation only works if multiple attackers collaborate, and cannot identify lone attackers.
+
+
+% \paragraph{}{Reputation systems in \gls{fl}}\label{sec:related:reputation}
+
+% ========
+% Choix d'une distribution de dirichlet. 
+% ========
+% Several other works use Bayesian probability distribution for \gls{fl}. 
+% \cite{song_reputation-based_2022,chu_securing_2022} used Beta probability distribution, 
+
+% Bayesian probability offers a theoretical foundation to make decision in an uncertain environment and have been used to make such decision in \gls{fl} \cite{song_reputation-based_2022,chu_securing_2022} and in other \gls{cids} context \cite{fung_dirichlet-based_2011}.
+
+% Based on the used probability distribution, it can be used to estimate the outcome of a binary event \cite{song_reputation-based_2022,chu_securing_2022} or a multivalued event .    
+
+
+% Phrase sur les différents modes d'évaluation présent (Comparaison de modèles, ...), on pourrait ouvrir içi sur la cross eval mais c'est plutôt quelque chose qu'on abborde dans l'archi.  
+
+% Since we use continuous evaluations metrics defined over [0,1] in this work, a multivalued probability distribution combined with a discretization of the evaluation offer us a better granularity.      
+% As the evaluation metric of a participant is continuous over [0,1] we first discretize $\rece$, the evaluations received by a participant $j$, into the set $\mathcal{E} = {e_1, e_2, \ldots, e_q}$ where $q$ is the number of possible discrete value.
+
+
+% ========
+% Comparaison aux papiers réputation sélectionnés
+% ======== 
+
+% ========
+% Papiers sélectionnés : 
+% wang_novel_2020, wang_reputation-enabled_2021
+% kang_reliable_2020
+% 
+
+% ========
+% \citeauthor{wang_reputation-enabled_2021} evaluate the submitted model by comparing its accuracy with the mean accuracy from others submitted models at the current round, the accuracy of the last global model and the accuracy of a temporary global model for this round \cite{wang_reputation-enabled_2021}.
+% The reputation score computed on the client is used for client selections in a first contribution \cite{wang_novel_2020} and model weighting in an extension of their work \cite{wang_reputation-enabled_2021}. 
+% Nonetheless, this approach is reliant on the accuracy calculation.
+% It can not be done client-side due to trust issue over self-reported values, nor can it be done by the central server due to the difficulty of creating an exhaustive validation data-set.
+
+% Nonetheless, this approach is reliant on the accuracy calculation: it can either be done client-side and self-reported or computed by the server based on a testing data-set. 
+% Server side validation is not practical in \gls{niid} settings due to the difficulty of creating an exhaustive validation data-set.
+% Self reporting could be practical but is not acceptable, as it means trusting client side operation.  
+
+% While working on \gls{niid} \gls{fl} secure aggregation \citeauthor{you_poisoning_2022} make the observation that poisoned model doesn't vary much over time while benign models that initially deviate from the global average tend to converge to the global over time \cite{you_poisoning_2022}. 
+
+% Leveraging this observation they build a reputation system that take into account the historical variation of the deviation between local model and the global one.   
+
+

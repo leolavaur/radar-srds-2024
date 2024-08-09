@@ -1,0 +1,10 @@
+# NFV2 full dataset.
+
+load_data:
+  _target_: "trustfids.dataset.nfv2.load_data"
+
+  base_path: ../data/full/
+  test_ratio: 0.2
+  common_test: true
+
+  

@@ -1,0 +1,2 @@
+_target_: trustfids.client.base.XevalClient
+self_evaluation: True

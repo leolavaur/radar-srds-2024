@@ -1,0 +1,61 @@
+fl:
+  num_clients: 12
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  silos:
+  - path: ../data/sampled/botiot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/nb15_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/toniot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/targeted/cicids_sampled_benign.csv.gz
+    type: benign
+  - path: ../data/sampled/targeted/cicids_sampled_attacked.csv.gz
+    type: malicious
+  distribution:
+  - 2
+  - 3
+  - 2
+  - 1
+  - 4
+client:
+  val_ratio: 0.1
+  _target_: trustfids.client.client.XevalClient
+  self_evaluation: true
+xp:
+  seed: 1138
+  save: false
+hardware:
+  cpu_headroom: 0.1
+server:
+  _target_: trustfids.server.server.XevalServer
+strategy:
+  _target_: trustfids.server.strategy.SimFedXeval
+  num_epochs: ${fl.num_epochs}
+  batch_size: ${fl.batch_size}
+  initial_parameters: null
+  clustering_metric: null
+  reputation_metric: null
+  clustering_kwargs: null
+  reputation_system:
+    _target_: trustfids.reputation.reput.DirichletReputationEnvironment
+    class_nb: 1000
+  evaluation_metric: f1
+baseline:
+  name: Trust-FIDS (no clustering)
+  description: 'This baseline implements Trust-FIDS, but without the clustering system.
+    It is used as
+
+    a baseline to study the impact of Trust-FIDS''s clustering system, both in terms
+    of
+
+    performance and resilience to attacks.
+
+    '
+scenario:
+  name: Sybil targeted attack
+  datasize: sampled
+  description: "This scenario considers that multiple coordinated attackers are targeting\
+    \ a specific\nattack in their dataset. \n"

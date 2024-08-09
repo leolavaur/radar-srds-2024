@@ -1,0 +1,9 @@
+---
+name: SimFedDistance
+#expected_accuracy: 72.8
+init:
+  _target_: trustfids.server.strategy.FedDistance
+  initial_parameters: null
+  num_epochs: "${fl.num_epochs}"
+  batch_size: "${fl.batch_size}"
+#eta_l: 0.3162 # client's learning rate

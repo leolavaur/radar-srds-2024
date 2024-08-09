@@ -1,0 +1,3 @@
+_target_: trustfids.client.learners.AEBertoli
+
+val_ratio: 0.1

@@ -1,0 +1,3 @@
+- scenario/distribution=sybils_min
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.95

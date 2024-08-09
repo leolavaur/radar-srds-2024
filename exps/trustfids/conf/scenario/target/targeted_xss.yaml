@@ -1,0 +1,5 @@
+# @package _global_
+
+attacker:
+  target: [ "xss" ]
+  poison_eval: True

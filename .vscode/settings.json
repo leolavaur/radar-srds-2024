@@ -1,0 +1,20 @@
+{
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter",
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "python.testing.pytestArgs": [
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.cwd":"./exps",
+    "python.testing.pytestEnabled": true,
+}

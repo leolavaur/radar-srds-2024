@@ -1,0 +1,25 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS
+  description: |
+    This baseline implements the entire Trust-FIDS stack, but with a perfect clustering
+    system. It uses the initial participant distribution as the clustering system. It is
+    mainly meant to be used as a baseline to analyze the other components of Trust-FIDS.
+
+archi:
+  strategy:
+    clustering_kwargs:
+      perfect: true
+
+    # default metric unless either clustering_metric or reputation_metric is set 
+    evaluation_metric: "f1"
+
+fl:
+  batch_size: 512
+
+defaults:
+  - /archi: trustfids
+  - /learner: mlp
+  - /dataset: nfv2_full
+  - _self_

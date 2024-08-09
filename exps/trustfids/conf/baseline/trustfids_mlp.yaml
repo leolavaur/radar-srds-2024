@@ -1,0 +1,24 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS MLP
+  description: |
+    This baseline implements the entire Trust-FIDS stack, including the reputation
+    system, on top of the AE client. The local MLP is taken from Popoola's work (see
+    popoola.yaml).
+
+    See the settings in archi/trustfids.yaml, and their respective configuration files
+    or details on the available options.
+
+strategy:
+  # default metric unless either clustering_metric or reputation_metric is set 
+  evaluation_metric: "f1"
+
+fl:
+  batch_size: 512
+
+defaults:
+  - /archi: trustfids
+  - /learner: mlp
+  - /dataset: nfv2_full
+  - _self_

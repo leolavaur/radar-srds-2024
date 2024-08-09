@@ -1,0 +1,514 @@
+\documentclass[
+    format=sigplan,
+    screen,
+    natbib=false,
+]{acmart}
+% Set page number with acme template : https://tex.stackexchange.com/questions/358088/add-page-number-in-acm-2017-sigconf-template 
+\settopmatter{printfolios=true}
+
+%% NOTE that a single column version is required for 
+%% submission and peer review. This can be done by changing
+%% the \doucmentclass[...]{acmart} in this template to 
+%% \documentclass[manuscript,screen,review]{acmart}
+%% 
+%% To ensure 100% compatibility, please check the white list of
+%% approved LaTeX packages to be used with the Master Article Template at
+%% https://www.acm.org/publications/taps/whitelist-of-latex-packages 
+%% before creating your document. The white list page provides  
+%% information on how to submit additional LaTeX packages for 
+%% review and adoption.
+%% Fonts used in the template cannot be substituted; margin 
+%% adjustments are not allowed.
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information. This information is sent to you
+%% when you complete the rights form. These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+%\setcopyright{acmcopyright}
+%\copyrightyear{2023}
+\acmYear{2023}
+%\acmDOI{XXXXXXX.XXXXXXX}
+
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[RAID '23]{26th International Symposium on Research in Attacks, Intrusions, and Defenses}{October 16--18, 2023}{Hong Kong, China}
+
+% \acmPrice{15.00}
+% \acmISBN{978-1-4503-XXXX-X/23/06}
+
+
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% For managing citations, it is recommended to use bibliography
+%% files in BibTeX format.
+%%
+%% You can then either use BibTeX with the ACM-Reference-Format style,
+%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
+%% support for advanced citation of software artefact from the
+%% biblatex-software package, also separately available on CTAN.
+%%
+%% Look at the sample-*-biblatex.tex files for templates showcasing
+%% the biblatex styles.
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               PACKAGES AND OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Use \PassOptionsToPackage here to pass options to packages already included in 
+% acmart.cls.
+
+% Avoiding imports of commonly used packages
+% ------------------------------------------------------------------------------
+
+\usepackage{amsmath,amsfonts}         % for math
+\usepackage{float}                    % for figures
+\usepackage{hyperref}                 % for hyperlinks
+\usepackage{booktabs,makecell}        % for tables
+ 
+% Packages for specific use
+% ------------------------------------------------------------------------------
+
+% lists and enumerations
+\usepackage[inline,shortlabels]{enumitem}
+% theorems definitions
+\usepackage{amsthm}
+% cross-references
+\usepackage{cleveref}
+\usepackage{suffix}
+% abbreviations
+\usepackage{xspace}
+% balancing columns
+\usepackage{balance}
+% Graphs and subgraphs
+\usepackage{subcaption,graphicx}
+
+
+
+% Other packages and options
+% ------------------------------------------------------------------------------
+
+%% Glossary
+\usepackage[acronym]{glossaries}
+\glsdisablehyper % disable the hyperlinks
+\makenoidxglossaries
+
+%% Bibliography
+\RequirePackage[
+    datamodel=acmdatamodel,
+    style=acmnumeric,
+    natbib,
+    % mincitenames=1,
+    % maxcitenames=1,
+    uniquelist
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+\addbibresource{trust-fids.bib}
+\addbibresource{bib-pm.bib}
+\addbibresource{bib-leo.bib}
+
+% Clear useless fields
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{pages}}
+\AtEveryBibitem{\clearfield{editor}}
+\AtEveryBibitem{\clearfield{publisher}}
+\AtEveryBibitem{\clearfield{address}}
+\AtEveryBibitem{\clearfield{series}}
+\AtEveryBibitem{\clearfield{isbn}}
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryBibitem{\clearfield{note}}
+\AtEveryBibitem{\clearfield{volume}}
+\AtEveryBibitem{\clearfield{number}}
+\AtEveryBibitem{\clearfield{location}}
+\AtEveryBibitem{\clearfield{eprinttype}}
+\AtEveryBibitem{\clearfield{eprint}}
+
+% link DOI or URL if available
+\newbibmacro{string+doi}[1]{%
+  \iffieldundef{doi}{%
+  	\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}}{\href{http://dx.doi.org/\thefield{doi}}{#1}}}
+
+% on the title, in color
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished,misc,techreport]
+  {title}{\usebibmacro{string+doi}{#1\addperiod}}
+\AtEveryBibitem{\clearfield{doi}}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocodex}
+
+% Tables
+\usepackage{tabularx}
+\usepackage{multirow}
+
+%Images / svg
+\usepackage{svg}
+
+% plot 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%tikz
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Properly spaced abbreviations, taken from the CVPR's style
+% package (https://stackoverflow.com/a/39363004).
+% Adds a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+% \needref command
+\newcommand{\needref}{\textbf{[?]}\xspace}
+
+% Special block definition
+% ------------------------------------------------------------------------------
+% aglorithmic block definitions (https://github.com/chrmatt/algpseudocodex/issues/3)
+\algnewcommand\algorithmicwith{\textbf{with}}%
+
+\makeatletter
+\algdef{SE}[WITH]{With}{EndWith}[1]{\algpx@startCodeCommand\algpx@startIndent\algorithmicwith\ #1\ \algorithmicdo}{\algorithmicend\ \algorithmicwith}%
+\ifbool{algpx@noEnd}{%
+  \algtext*{EndWith}%
+  %
+  % end indent line after (not before), to get correct y position for multiline text in last command
+  \apptocmd{\EndWith}{\algpx@endIndent}{}{}%
+}{}%
+
+\pretocmd{\With}{\algpx@endCodeCommand}{}{}
+
+% for end commands that may not be printed, tell endCodeCommand whether we are using noEnd
+\ifbool{algpx@noEnd}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[1]}{}{}%
+}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[0]}{}{}%
+}%
+\makeatother
+
+% Personalized theorems
+% ------------------------------------------------------------------------------
+
+%% Hypotheses
+\theoremstyle{definition}
+\newtheorem{hypothesis}{Hypothesis}
+\crefname{hypothesis}{hypothesis}{hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+
+%% Challenges
+\theoremstyle{definition}
+\newtheorem{challenge}{Challenge}
+\crefname{challenge}{challenge}{challenges}
+\Crefname{challenge}{Challenge}{Challenges}
+
+%% Research Questions
+\newtheorem{innerRQ}{RQ}
+\crefname{innerRQ}{RQ}{RQs}
+\Crefname{innerRQ}{RQ}{RQs}
+
+\newenvironment{RQ}[1]
+  {\renewcommand\theinnerRQ{#1}\innerRQ}
+  {\endinnerRQ}
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
+% Tables
+% ------------------------------------------------------------------------------
+
+\newcommand{\ccell}[1]{\multicolumn{1}{c}{#1}}
+
+% File inputs
+% ------------------------------------------------------------------------------
+
+% Notation macros
+\input{includes/macros}
+% Glossary content
+\input{includes/glossary}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title[% short version
+    Filtering Contributions in Federated Learning for Intrusion Detection
+]{%
+    Filtering Contributions in Federated Learning for Intrusion Detection: a Cross-evaluation approach for Reputation-aware Model Weighting
+}
+
+% TODO: choose final title:
+% - Client Trustworthiness Assessment in Highly Heterogeneous Federated Learning Settings for Intrusion Detection
+% - 
+
+
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+
+\newcommand{\redactedauthor}{%
+    \author{Redacted for double-blind}
+    \email{redacted@redacted.com}
+    \affiliation{%
+        \institution{REDACTED}
+        \institution{REDACTED}
+        \city{Redacted}
+        \country{Redacted}
+    }
+}
+
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+\redactedauthor
+
+%\author{Léo Lavaur}
+%\authornote{Both first authors contributed equally to this research.}
+%\email{leo.lavaur@imt-atlantique.fr}
+%% \orcid{1234-5678-9012}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / SOTERN}
+%  \institution{Chair CyberCNI}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Pierre-Marie Lechevalier}
+%\authornotemark[1]
+%\email{pierre-marie.lechevalier@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / ADOPNET}
+%  \city{Rennes}
+%  \country{France}
+%}
+
+%\author{Fabien Autrel}
+%\email{fabien.autrel@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / SOTERN}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Yann Busnel}
+%\email{yann.busnel@imt-nord-europe.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / SOTERN}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Hélène Le~Bouder}
+%\email{helene.le-bouder@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / OCIF}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Romaric Ludinard}
+%\email{romaric.ludinard@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / SOTERN}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Marc-Oliver Pahl}
+%\email{marc-oliver.pahl@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / SOTERN}
+%  \institution{Chair CyberCNI}
+%  \city{Rennes}
+%  \country{France}
+%}
+%
+%\author{Géraldine Texier}
+%\email{geraldine.texier@imt-atlantique.fr}
+%\affiliation{%
+%  \institution{IMT Atlantique}
+%  \institution{IRISA / ADOPNET}
+%  \city{Rennes}
+%  \country{France}
+%}
+
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+%\renewcommand{\shortauthors}{Lavaur and Lechevalier, et al.}
+\renewcommand{\shortauthors}{Redacted and Redacted, et al.}
+
+\begin{abstract}
+    % (blue) Basic introduction to the field (one or two sentences): 
+    %\Glspl{cids} improve resilience to distributed attack campaigns by allowing \acrshortpl{ids} to share locally acquired knowledge with peers.
+    %While it consequently improves detection, data sharing is challenging, especially in \gls{ml} workflows.
+    % (pink) More detailed background (Two or three s)
+    
+    \Gls{fl} is a distributed learning paradigm that enables \glspl{cids} to benefit from the experience of several participants without disclosing their local data. 
+    % \Gls{fl} is a distributed learning paradigm that enables \glspl{cids} without the need to share local data, while still benefiting from the experience of all participants.
+    %By sharing the learning task among several actors, it allows training a global intrusion detection model that benefits from the data of all participants.
+    Negligent or malicious clients might, however, negatively contribute to the global model and degrade its performance.
+    % (yellow) General problem (1 s)
+    While existing approaches typically identify negative contributions through model comparison, participants in \gls{cids} are inherently heterogeneous. 
+    Thus, it is difficult to differentiate a malicious update from a legitimate one coming from a different dataset.
+    % Existing approaches to detect adversaries tend to falter in heterogeneous settings, while \gls{cids} federations are inherently heterogeneous.
+    
+    In this paper, we present a novel \gls{fl} architecture for intrusion detection, able to deal with both, heterogeneous and malicious contributions, without the need for a single source of truth.
+    We leverage client-side evaluation for clustering participants based on their perceived similarity, and then feed these evaluations to a reputation system that weights participants' contributions based on their trustworthiness.
+
+    We evaluate our approach against four intrusion detection datasets, in both benign and malicious scenarios. 
+    % (cyan) Summarizing the main results (one s)
+    We show that our clustering successfully groups participants originating from the same dataset together, while excluding the noisiest attackers. 
+    The reputation system then strongly limits the impact of the stealthier ones within each cluster, as long as they remain a minority.
+    
+    % (green) summarizing how the result/approach compares with past work (2 or 3 s)
+    %We confront our work with a state-of-the-art poisoning mitigation approach. 
+    %We show comparable performance when using a single dataset, and vastly outperform them when data originate from multiple datasets, a case we deem more realistic for \gls{cids}.  
+
+    The comparison of our work with a state-of-the-art mitigation strategy highlights its versatility.
+    In particular, we outperform them on \acrshort{iid} and practical \acrshort{niid} use cases, while remaining comparable in the pathological \acrshort{niid} ones, that are less relevant for \gls{cids}.
+    
+    % (purple) Put the results in a more general context (1 or 2)
+    % (red) optional perspective (2 or 3)
+    % Nice but not relevant for abstract
+    % Our work is open source, and all code can be found at: \codeurl. 
+\end{abstract}
+
+% (blue) Basic introduction to the field (one or two sentences): 
+    %\Glspl{cids} improve resilience to distributed attack campaigns by allowing \acrshortpl{ids} to share locally acquired knowledge with peers.
+    %While it consequently improves detection, data sharing is challenging, especially in \gls{ml} workflows.
+    % (pink) More detailed background (Two or three s)
+    %\Gls{fl} distributes the learning task among several actors, and allows training a global intrusion detection model that benefits from the data of all participants.
+    %Negligent or malicious clients might, however, negatively contribute to the global model and degrade its performance.
+    % (yellow) General problem (1 s)
+    %While existing approaches typically identify negative contributions through model comparison, participants in \gls{cids} are inherently heterogeneous. 
+    %Thus, it is difficult to differentiate a malicious update from a legitimate one coming from a different dataset.
+    
+    %In this paper, we present a modified \gls{fl} framework for intrusion detection, able to deal with both, heterogeneous and malicious contributions, without the need for a single source of truth.
+    %We leverage client-side evaluation for clustering participants based on their perceived similarity, and then feed these evaluations to a reputation system that weights participants' contributions based on their trustworthiness.
+
+    %We evaluate our approach against four intrusion detection datasets, in both benign and malicious scenarios. 
+    % (cyan) Summarizing the main results (one s)
+    %We show that the clustering method successfully group participants originating from the same dataset together, while excluding the noisiest attackers. 
+    %The reputation system then strongly limits the impact of sneakier attackers within each cluster, as long as they remain a minority.
+    
+    % (green) summarizing how the result/approach compares with past work (2 or 3 s)
+    %We confront our work to a state-of-the-art poisoning mitigation approach.  We show comparable performance on data coming from a single dataset, and vastly outperform them when data originate from multiple datasets, a case we deem more relevant for \gls{cids}.  
+    
+    % (purple) Put the results in a more general context (1 or 2)
+    % (red) optional perspective (2 or 3)
+    %Our work is open source, and all code can be found at: \codeurl. 
+
+\glsresetall % reset all previous glossary calls
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%%
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10002978.10002997.10002999</concept_id>
+       <concept_desc>Security and privacy~Intrusion detection systems</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10002978.10003006.10003013</concept_id>
+       <concept_desc>Security and privacy~Distributed systems security</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10010147.10010257.10010258.10010260.10010229</concept_id>
+       <concept_desc>Computing methodologies~Anomaly detection</concept_desc>
+       <concept_significance>300</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Security and privacy~Intrusion detection systems}
+\ccsdesc[500]{Security and privacy~Distributed systems security}
+\ccsdesc[300]{Computing methodologies~Anomaly detection}
+
+
+%
+%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{federated learning, intrusion detection, reputation systems, trust,
+heterogeneity, clustering, cross-evaluation}
+
+ \received{March, 29 2023}
+\received[revised]{--}
+\received[accepted]{--}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+% Sections
+% ------------------------------------------------------------------------------
+
+\input{sections/10_introduction.tex}
+\input{sections/20_background.tex}
+\input{sections/30_problem.tex}
+\input{sections/40_soa}
+\input{sections/50_archi}
+\input{sections/60_eval}
+\input{sections/80_conclusion}
+\input{sections/90_ack}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \defaultprintbib % print the bibliography
+
+\printbibliography
+
+\end{document}
+\endinput
+%%
+%% End of file `main.tex'.

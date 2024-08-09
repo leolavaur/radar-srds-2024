@@ -1,0 +1,122 @@
+% Model poisoning attacks aims to repurpose the global aggregated model to change its behavior through client-side modifications. 
+% These attacks can be separated in two categories depending on the type of changes they seek to make to the global model.
+% \begin{description}
+    
+%     \item[Targeted attacks:] are attacks that aim to control the behavior of the model, when it's subjected to a specific input. In supervised learning, label flipping attacks, where the attacker controls the attributed label of a specific data entry, fall into this category \cite{fang_local_2020}. 
+    Since in this work we use an auto-encoder, an attacker could inject a specific attack into his training data so that this attack is considered as part of the normal behavior going forward.  
+    \item[Untargeted attacks:] does not target specific input and only try to degrade the model performance as a whole \cite{cao_fltrust_2022}.  
+\end{description}
+\subsubsection{Neglectful clients}\label{sec:problem.threat.client} 
+The executed attack can take place at different stage of the client training process. 
+In a \textit{data poisoning attack}, the training dataset can be arbitrarily modified, but the participant faithfully executes the training process~\cite{fang_local_2020}. 
+This faithful execution on untrusted data, however, change the local model, which can be enough to contaminate the global aggregation model \cite{tolpegin_data_2020}. 
+Data poisoning can occur even when participants are of good faith.
+As data for the training dataset is extracted from network events, the footprint from a stealthy network intrusion can poison this dataset while staying under the radar.
+We denote as \emph{honest-but-neglectful} participants, the ones of good faith that learn on corrupted data. 
+
+In another class of attacks, called \textit{model poisoning attack}, malicious clients can directly make arbitrary changes to the local model updates sent to the server \cite{fang_local_2020}. 
+This last class of attack has been shown to be harder to prevent \cite{fang_local_2020}, it also requires cooperation from the client: either willingly or due to the compromise of the \gls{ids} running the federated learning process. 
+Nevertheless, for this work, we focus on honest-but-neglectful participants.  
+% Fang_local : permet de contourner des models d'aggrégations robustes aux byzantins. 
+On the other hand, the same distinctions apply for the evaluations issued by the client that we note $\issue$. 
+In case of \textit{data poisoning}, an honest-but-neglectful client can send inaccurate evaluations, while a malicious client can send arbitrary evaluations to affect the weighting process. 
+% Positionnement du client : honest but neglectfull ? Le choix peut être fait en fonction de jusque ou on va dans les tests et de quels sont les résultats.
+\subsubsection{White-Box Adversary}\label{sec:problem.threat.white-box}
+Considering the degree of information available on a client that conducts an attack, we can establish 2 different categories of adversaries~\cite{wang_flare_2022}.
+\begin{itemize}
+    \item \textit{Black-Box adversary}: clients only have access to the global model aggregated by the server.
+    \item \textit{White-Box adversary}: clients have access to local models from the others clients.
+\end{itemize} 
+Note that our work is positioned in this second category: each client access others client local models during the cross-evaluation. 
+% From a privacy perspective, however, the client does not need to match the received local models with the participant that issued them: they are not provided with this information.
+
+\subsubsection{Honest but curious server}\label{sec:problem.threat.server}
+In the present work, the parameter server is deemed \textit{honest-but-curious}: while the server can be fully trusted to perform its task, it should access as little information as possible.  
+%TODO LN : cuirous ? => unusual ? Pm : C'est la dénomination d'usage pour les serveurs qui font leur job mais sont indiscrts en FL. 
+
+
+% \subsubsection{Neglectful clients}\label{sec:problem.threat.client} 
+% The executed attack can take place at different stage of the client training process. 
+% In a \textit{data poisoning attack}, the training dataset can be arbitrarily modified, but the participant faithfully executes the training process~\cite{fang_local_2020}. 
+% This faithful execution on untrusted data, however, change the local model, which can be enough to contaminate the global aggregation model \cite{tolpegin_data_2020}. 
+% Data poisoning can occur even when participants are of good faith.
+% As data for the training dataset is extracted from network events, the footprint from a stealthy network intrusion can poison this dataset while staying under the radar.
+% We denote as \emph{honest-but-neglectful} participants, the ones of good faith that learn on corrupted data. 
+
+% In another class of attacks, called \textit{model poisoning attack}, malicious clients can directly make arbitrary changes to the local model updates sent to the server \cite{fang_local_2020}. 
+% This last class of attack has been shown to be harder to prevent \cite{fang_local_2020}, it also requires cooperation from the client: either willingly or due to the compromise of the \gls{ids} running the federated learning process. 
+% Nevertheless, for this work, we focus on honest-but-neglectful participants.  
+% % Fang_local : permet de contourner des models d'aggrégations robustes aux byzantins. 
+% On the other hand, the same distinctions apply for the evaluations issued by the client that we note $\issue$. 
+% In case of \textit{data poisoning}, an honest-but-neglectful client can send inaccurate evaluations, while a malicious client can send arbitrary evaluations to affect the weighting process. 
+% % Positionnement du client : honest but neglectfull ? Le choix peut être fait en fonction de jusque ou on va dans les tests et de quels sont les résultats.
+% \subsubsection{White-Box Adversary}\label{sec:problem.threat.white-box}
+% Considering the degree of information available on a client that conducts an attack, we can establish 2 different categories of adversaries~\cite{wang_flare_2022}.
+% \begin{itemize}
+%     \item \textit{Black-Box adversary}: clients only have access to the global model aggregated by the server.
+%     \item \textit{White-Box adversary}: clients have access to local models from the others clients.
+% \end{itemize} 
+% Note that our work is positioned in this second category: each client access others client local models during the cross-evaluation.
+
+
+
+
+%     \item[Targeted attacks:] are attacks that aim to control the behavior of the model, when it's subjected to a specific input. In supervised learning, label flipping attacks, where the attacker controls the attributed label of a specific data entry, fall into this category \cite{fang_local_2020}.
+% server
+% - honest-but-curious
+%    - fully trusted to perform its tasks
+%    - should have as little informations on the participants as possible
+
+% participant
+% - honest-but-curious -> non car sinon pas d'intérêt à faire de la pondération des avis
+%    - honest: ie. participants won't share altered informatinos (eg. the evaluation of the other's moodels)
+%    - curious, ie. participants might be interested in getting informations about others, which should be prevented
+%        - client must not be able to associate a model to his owner / know who his participating to the system
+
+% Attack model :
+% Honest but curious, some attack might be missed because the participants doesn't know they are currently attacked. There is no intentionally poisoned model.
+% - neglectful (wont attack the system on purpose, but can be compromised)
+%    - compromised, ie. training data can be arbitraly modified, ...
+%    - the shared local model (weights) results from the exact/honest execution of the training algorthm, and has not been modified by the client (including for poisoning purpose).
+%       - the shared model is the strict representation of the training data
+
+% White box adversary -> usually only a problem for the central server, now extended to every participants due to the cross evaluation. 
+
+% \subsubsection{Server POV}
+% Global hypothesis 
+% \begin{itemize}
+%     \item federated learning
+%     \item centralized system 
+%     \item cross silo 
+%     \item for the moment all the entities will contribute, later we can see if a subset of participants is enough
+% \end{itemize}
+
+
+
+% Using these 
+
+% It will aggregate the weights with a given strategy and compute new weight for the model (with a weighted mean of the weights it received). The reputation score is one of the metrics used to compute the new weights.
+
+% The reputation model evaluates the consistency of the weights of the model returned by a participant over time.
+
+% To compute this weight I can use : 
+% \begin{itemize}
+%     \item Hypothesis 1 : each participant (or a subset of part.) evaluates the model of each (or a subset) participant on its local dataset, returns the accuracy\footnote{In a supervised learning model the accuracy is a metric based on the number of true positives and true negatives regarding the total predictions, we must investigate for unsupervised learning} (or other metrics) as a reputation feedback (if $n$ entities are participating, the reputation system will collect $n-1$ feedback per round)
+%     \item Hyp 2: deviation regarding the historic of previous values (for that participant)
+%     \item Hyp 3: deviation regarding the last global model
+% \end{itemize}
+
+% Either the server stops the process after a given number of round, or when a desired convergence threshold, or being infinite if we perform a continuous detection of the anomalies (in this case the periodicity of the rounds can vary when the convergence is stable). 
+
+
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.9\columnwidth]{figures/systemeglobal.png}
+%     \caption{Caption}
+%     \label{fig:my_label}
+% \end{figure}
+
+
+% POINTS DE SIMPLIFICATION A MENTIONNER 
+% - Ne permet pas pour l'instant de nouveaux entrants 

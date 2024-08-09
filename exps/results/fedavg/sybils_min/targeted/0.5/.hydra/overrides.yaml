@@ -1,0 +1,6 @@
+- archi=fedavg
+- scenario/distribution=sybils_min
+- +scenario/target=targeted
+- scenario/attacker=stealth0.5
+- xp.seed=56
+- fl.drop_class=False

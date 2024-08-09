@@ -1,0 +1,5 @@
+# @package _global_
+
+attacker:
+  target: [ "Brute Force" ]
+  poison_eval: True

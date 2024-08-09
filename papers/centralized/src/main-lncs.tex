@@ -1,0 +1,357 @@
+\documentclass[runningheads]{llncs}
+% \IEEEoverridecommandlockouts
+
+%\usepackage{geometry}
+%\geometry{
+%  a4paper,         % or letterpaper
+%  textwidth=15cm,  % llncs has 12.2cm
+%  textheight=24cm, % llncs has 19.3cm
+%  heightrounded,   % integer number of lines
+%  hratio=1:1,      % horizontally centered
+%  vratio=2:3,      % not vertically centered
+%}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               PACKAGES AND OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Use \PassOptionsToPackage here to pass options to packages already included in 
+% acmart.cls.
+
+% Avoiding imports of commonly used packages
+% ------------------------------------------------------------------------------
+
+\usepackage{amsmath,amsfonts,mathrsfs}% for math
+\usepackage{stmaryrd}                 % for special math fonts
+\usepackage{float,subcaption} % for figures
+\usepackage[hyphens]{url}
+\usepackage[
+    colorlinks,
+    urlcolor=blue,
+    citecolor=teal,
+    linkcolor=magenta,
+    ]{hyperref}                 % for hyperlinks
+\usepackage{booktabs,makecell}        % for tables
+\usepackage[labelfont=bf]{caption} % vil hack parce qu'on ne trouve pas pourquoi Fig est pas bold
+ 
+% Packages for specific use
+% ------------------------------------------------------------------------------
+
+% lists and enumerations
+\usepackage[inline,shortlabels]{enumitem}
+% theorems definitions
+%\usepackage{amsthm}
+% cross-references
+\usepackage{cleveref}
+\usepackage{suffix}
+% abbreviations
+\usepackage{xspace}
+% balancing columns
+\usepackage{balance}
+% better typsetting
+\usepackage{microtype}
+% other symbols
+\usepackage{textcomp}
+
+% Other packages and options
+% ------------------------------------------------------------------------------
+
+%% Glossary
+\usepackage[acronym]{glossaries}
+\glsdisablehyper % disable the hyperlinks
+\makenoidxglossaries
+
+%% Bibliography
+\RequirePackage[
+    %datamodel=acmdatamodel,
+    backend=biber,
+    style=lncs,
+    natbib,
+    mincitenames=1,
+    maxcitenames=1,
+    uniquelist,
+    doi=false,
+    url=false,
+    sorting=none,
+    maxbibnames=10,
+]{biblatex}
+
+%\addbibresource{bibliography.bib}
+%\addbibresource{trust-fids.bib}
+%\addbibresource{bib-pm.bib}
+%\addbibresource{bib-leo.bib}
+
+%https://tex.stackexchange.com/questions/41821/creating-bib-file-containing-only-the-cited-references-of-a-bigger-bib-file
+\addbibresource{main-lncs_biber.bib}
+
+% link DOI or URL if available
+\newbibmacro{string+doi}[1]{%
+  \iffieldundef{doi}{%
+  	\iffieldundef{url}{
+  		#1
+	}{
+		\href{\thefield{url}}{#1}
+	}
+  }{
+  	\href{http://dx.doi.org/\thefield{doi}}{#1}
+   }
+  }
+
+% on the title, in color
+\DeclareFieldFormat
+[article,inproceedings,inbook,incollection,patent,thesis,unpublished,misc,techreport]
+  {title}{\usebibmacro{string+doi}{#1\addperiod}}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocodex}
+
+% Tables
+\usepackage{tabularx}
+\usepackage{multirow}
+
+%Images / svg
+\usepackage{svg}
+
+% plot 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%tikz
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Graphs and subgraphs
+\usepackage{subcaption,graphicx}
+
+% Properly spaced abbreviations, taken from the CVPR's style
+% package (https://stackoverflow.com/a/39363004).
+% Adds a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+% \needref command
+\newcommand{\needref}{\textbf{[?]}\xspace}
+
+% Special block definition
+% ------------------------------------------------------------------------------
+% aglorithmic block definitions (https://github.com/chrmatt/algpseudocodex/issues/3)
+\algnewcommand\algorithmicwith{\textbf{with}}%
+
+\makeatletter
+\algdef{SE}[WITH]{With}{EndWith}[1]{\algpx@startCodeCommand\algpx@startIndent\algorithmicwith\ #1\ \algorithmicdo}{\algorithmicend\ \algorithmicwith}%
+\ifbool{algpx@noEnd}{%
+  \algtext*{EndWith}%
+  %
+  % end indent line after (not before), to get correct y position for multiline text in last command
+  \apptocmd{\EndWith}{\algpx@endIndent}{}{}%
+}{}%
+
+\pretocmd{\With}{\algpx@endCodeCommand}{}{}
+
+% for end commands that may not be printed, tell endCodeCommand whether we are using noEnd
+\ifbool{algpx@noEnd}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[1]}{}{}%
+}{%
+  \pretocmd{\EndWith}{\algpx@endCodeCommand[0]}{}{}%
+}%
+\makeatother
+
+% Tables
+% ------------------------------------------------------------------------------
+
+\newcommand{\ccell}[1]{\multicolumn{1}{c}{#1}}
+
+% File inputs
+% ------------------------------------------------------------------------------
+
+% Notation macros
+\input{includes/macros}
+% Glossary content
+\input{includes/glossary}
+
+
+% Page numbers
+% ------------------------------------------------------------------------------
+%\pagestyle{plain}
+
+
+% Personalized theorems
+% ------------------------------------------------------------------------------
+
+% Relax the `\proof` command used in LNCS cls causing
+% "Command \proof already defined"
+% Solution: https://tex.stackexchange.com/a/699868
+\let\proof\relax\let\endproof\relax
+\usepackage{amsthm}
+
+%% Hypotheses
+\theoremstyle{definition}
+\newtheorem{hypothesis}{Hypothesis}
+\crefname{hypothesis}{hypothesis}{hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+
+%% Challenges
+\theoremstyle{definition}
+\newtheorem{challenge}{Challenge}
+\crefname{challenge}{challenge}{challenges}
+\Crefname{challenge}{Challenge}{Challenges}
+
+%% Research Questions
+\newtheorem{innerRQ}{RQ}
+\crefname{innerRQ}{RQ}{RQs}
+\Crefname{innerRQ}{RQ}{RQs}
+
+\newenvironment{RQ}[1]
+  {\renewcommand\theinnerRQ{#1}\innerRQ}
+  {\endinnerRQ}
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
+% Lorem Ipsum
+\usepackage{lipsum}
+
+% Lengths
+\setlength{\intextsep}{1.5\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+\setlength{\textfloatsep}{1.5\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+\setlength{\floatsep}{1.5\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+%\title{Trust-FIDS: Distributed Cross-evaluation for Reputation-aware Model Weighting in Federated Learning
+%\title{Trust-FIDS: Leveraging Cross-evaluation in Reputation Weighting in Federated Learning
+%\title{Trust-FIDS: Cross-Evaluation for Collaborative Federated Learning Intrusion Detection System
+%\title{Trust-FIDS: Cross-evaluation for Contribution Filtering in Federated-Learning-based Intrusion Detection
+%\title{Trust-FIDS: Cross-evaluation for Contribution Filtering in Federated-Learning-based IDS
+\title{Trust-FIDS: Cross-evaluation for Poisoning Mitigation in Federated-Learning-based IDS
+%\thanks{%
+%This research is part of the chair CyberCNI.fr with support of the FEDER development fund of the Brittany region.}
+}
+\titlerunning{Trust-FIDS}
+
+\author{
+     Léo Lavaur\inst{1}%\orcidID{0000-1111-2222-3333}
+\and Pierre-Marie Lechevalier\inst{1}%\orcidID{1111-2222-3333-4444}
+\and Fabien Autrel\inst{1}%\orcidID{2222-3333-4444-5555}
+\and Yann Busnel\inst{2}%\orcidID{1111-2222-3333-4444}
+\and Hélène Le~Bouder\inst{1}%\orcidID{1111-2222-3333-4444}
+\and Romaric Ludinard\inst{1}%\orcidID{0000-0002-4997-4813}
+\and Marc-Oliver Pahl\inst{1}%\orcidID{1111-2222-3333-4444}
+\and Géraldine Texier\inst{1}%\orcidID{1111-2222-3333-4444}
+}
+
+\institute{
+    IMT Atlantique / IRISA, Rennes, FRANCE\\
+     \email{firstname.name@imt-atlantique.fr}\\
+%\and Chair CyberCNI.fr, FRANCE\\
+%     \email {\{lavaur,pahl\}@cybercni.fr}
+\and 
+    IMT Nord Europe / IRISA, Lille, FRANCE\\
+     \email{yann.busnel@imt-nord-europe.fr}
+}
+
+
+\authorrunning{L. Lavaur, P-M. Lechevalier {\em et al.}}
+
+\maketitle
+%\thispagestyle{plain} % to display the page number on first page
+\vspace{-1pt}
+\begin{abstract}
+  % (blue) Basic introduction to the field (one or two sentences): 
+  %\Glspl{cids} improve resilience to distributed attack campaigns by allowing \acrshortpl{ids} to share locally acquired knowledge with peers.
+  %While it consequently improves detection, data sharing is challenging, especially in \gls{ml} workflows.
+  % (pink) More detailed background (Two or three s)
+  %\Gls{fl} is a distributed learning paradigm that enables \glspl{cids} without the need to share local data, while still benefiting from the experience of all participants.
+  The emergence of \gls{fl} has allowed \glspl{cids} to benefit from the experience of multiple actors, without disclosing local data.
+  %By sharing the learning task among several actors, it allows training a global intrusion detection model that benefits from the data of all participants.
+  Yet, negligent or malicious clients might negatively contribute to the global model and degrade its performance.
+  % (yellow) General problem (1 s)
+  %Existing mitigation strategies falter in heterogeneous settings, while \gls{cids} participants are inherently heterogeneous.
+  \Glspl{cids} inherently generate and consume heterogeneous data, complicating the detection of malicious behaviors by existing mitigation strategies, which tend to falter in such settings.
+  %Existing mitigation strategies tend to falter in \glspl{cids} because they generate and consume heterogeneous data, which complicates the detection of malicious behaviors.
+  We present \thecontrib, a novel \gls{fl} architecture for intrusion detection able to deal with malicious contributions, even in heterogeneous settings, and without a centralized source of truth.
+  %TODO personne je ne suis pas fan du we mais pluoto de la forme passive en anglais
+  \thecontrib leverages client-side evaluation to cluster participants based on their similarity.
+  These evaluations then feeds a reputation system that weights participants' contributions based on their perceived trustworthiness.
+  We evaluate our approach on four intrusion detection datasets in various poisoning settings, and against a state-of-the-art mitigation strategy.
+  Our results show that combining clustering and a reputation system succeeds in detecting both colluding and lone attackers, highlighting its versatility.
+  
+  % (cyan) Summarizing the main results (one s)
+  %We show that our clustering successfully groups participants originating from the same dataset together, while excluding the noisiest attackers. 
+  %The reputation system then strongly limits the impact of stealthier attackers, as long as they remain a minority within the cluster.
+  %We show that 
+  
+  % (green) summarizing how the result/approach compares with past work (2 or 3 s)
+  %We confront our work with a state-of-the-art poisoning mitigation approach. 
+  %We show comparable performance when using a single dataset, and vastly outperform them when data originate from multiple datasets, a case we deem more realistic for \gls{cids}.  
+  %The comparison of our work with a state-of-the-art mitigation strategy highlights its versatility in detecting both colluding and lone attackers. %\gls{iid}, and \acrshort{niid} data for the different attack scenarios. 
+  % In particular, we outperform them on \acrshort{iid} and practical \acrshort{niid} use cases, while remaining comparable in the pathological \acrshort{niid} ones, that are less relevant for \gls{cids}. 
+  
+  % The comparison of our work with a state-of-the-art mitigation strategy highlights its versatility.
+  % In particular, we outperform them on \acrshort{iid} and practical \acrshort{niid} use cases, while remaining comparable in the pathological \acrshort{niid} ones, that are less relevant for \gls{cids}.
+  
+  % (purple) Put the results in a more general context (1 or 2)
+  % (red) optional perspective (2 or 3)
+  %Our work is open source, and all codes will be found on a public repository in case of acceptance.%at: \codeurl. 
+  %TODO LN found on on est sur du on ?
+
+  \keywords{Federated Learning \and Intrusion Detection \and Cross-evaluation \and Similarity \and Clustering \and Reputation Systems \and Trust \and Heterogeneity}
+\end{abstract}
+
+%\begin{IEEEkeywords}
+%federated learning, intrusion detection, reputation systems, trust, heterogeneity, clustering, cross-evaluation
+%\end{IEEEkeywords}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+%\maketitle
+
+% Sections
+% ------------------------------------------------------------------------------
+
+%reintroduce acronyms
+\glsresetall
+
+\input{sections/10_introduction.tex}
+\input{sections/20_problem.tex}
+\input{sections/30_soa}
+\input{sections/40_archi}
+\input{sections/50_eval}
+\input{sections/60_discussion}
+\input{sections/70_conclusion}
+\input{sections/80_ack}
+
+\printbibliography
+
+\input{sections/90_annexes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%               DOCUMENT END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \defaultprintbib % print the bibliography
+
+
+
+\end{document}
+%%
+%% End of file `main.tex'.

@@ -1,0 +1,17 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS (no clustering)
+  description: |
+    This baseline implements Trust-FIDS, but without the clustering system. It is used as
+    a baseline to study the impact of Trust-FIDS's clustering system, both in terms of
+    performance and resilience to attacks.
+
+strategy:
+  clustering_kwargs: null
+
+defaults:
+  - /archi: trustfids
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_

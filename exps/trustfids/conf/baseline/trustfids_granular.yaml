@@ -1,0 +1,17 @@
+# @package _global_
+
+baseline:
+  name: Trust-FIDS (granular)
+  description: |
+    This baseline implements the entire Trust-FIDS stack, including the reputation
+    system, but with more "granular" metric selection. It can use different metrics for
+    clutering and reputation.
+
+strategy:
+  clustering_metric: "loss"
+
+defaults:
+  - /archi: trustfids
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_

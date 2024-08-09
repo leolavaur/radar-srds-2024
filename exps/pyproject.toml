@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "trustfids"
+version = "0.1.0"
+description = "Experiments for the Trust-FIDS projects."
+authors = ["Léo Lavaur <leo.lavaur@imt-atlantique.fr>"]
+readme = "README.md"
+#packages = [{include = "trustfids"}]
+
+[tool.poetry.dependencies]
+python = "~3.10.7"
+tensorflow = "~2.11.0"
+flwr = { version = "^1.1.0", extras = ["simulation"] }
+matplotlib = "^3.6.1"
+numpy = "1.23.5"
+pandas = "1.4.3"
+scikit-learn = "~1.1.1"
+# EFC-Package is repackaged from source, converted to Poetry, and then build to
+# a python wheel (see github:phdcybersec/ECF-Package)
+efc = { file = "./lib/efc/efc-0.1.0-cp310-cp310-manylinux_2_35_x86_64.whl" }
+# fids = { path = "./lib/python-fids", develop = true }
+hydra-core = "^1.3.0"
+tensorrt = "^8.5.3.1"
+hydra-joblib-launcher = "^1.2.0"
+ruff = "^0.0.277"
+
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+pytest = "^7.2.0"
+isort = "^5.11.4"
+logging-tree = "^1.9"
+ipykernel = "^6.21.3"
+ipython = "^8.11.0"
+jupyterlab = "^3.6.1"
+autoflake = "^2.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+trustfids = "trustfids.__main__:run" # not working yet
+analyze = "trustfids.utils.analyze:main"

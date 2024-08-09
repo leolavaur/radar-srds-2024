@@ -1,0 +1,7 @@
+# @package _global_
+
+attacker:
+  poisoning: "1.0-1.0{4}+1.0{10}"
+
+fl:
+  num_rounds: 20

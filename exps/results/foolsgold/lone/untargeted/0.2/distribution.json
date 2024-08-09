@@ -1,0 +1,30 @@
+{
+    "cicids": [
+        "client_000",
+        "client_001",
+        "client_002",
+        "client_003",
+        "client_004"
+    ],
+    "toniot": [
+        "client_005",
+        "client_006",
+        "client_007",
+        "client_008",
+        "client_009"
+    ],
+    "botiot": [
+        "attacker_000",
+        "client_010",
+        "client_011",
+        "client_012",
+        "client_013"
+    ],
+    "nb15": [
+        "client_014",
+        "client_015",
+        "client_016",
+        "client_017",
+        "client_018"
+    ]
+}

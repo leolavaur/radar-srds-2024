@@ -1,0 +1,61 @@
+fl:
+  num_clients: 10
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  silos:
+  - path: ../data/sampled/botiot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/cicids_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/nb15_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/toniot_sampled.csv.gz
+    type: benign
+client:
+  val_ratio: 0.1
+  _target_: trustfids.client.client.FIDSClient
+  with_efc: false
+xp:
+  seed: 1138
+  save: false
+hardware:
+  cpu_headroom: 0.1
+strategy:
+  _target_: trustfids.server.strategy.PersistantFedAvg
+  initial_parameters: null
+  num_epochs: ${fl.num_epochs}
+  batch_size: ${fl.batch_size}
+baseline:
+  name: FedAvg baseline
+  description: 'This baseline implements the FedAvg algorithm, as described in [1],
+    with the same
+
+    local algorithm as the Trust-FIDS baseline. It is used as a baseline to study
+    the
+
+    impact of Trust-FIDS''s appraoch, compared to the original FedAvg algorithm.
+
+
+    [1] B. McMahan, E. Moore, D. Ramage, S. Hampson, et B. A. y Arcas,
+
+    « Communication-efficient learning of deep networks from decentralized data »,
+    in
+
+    Proceedings of the 20th international conference on artificial intelligence and
+
+    statistics, avr. 2017. Disponible sur:
+
+    https://proceedings.mlr.press/v54/mcmahan17a.html
+
+    '
+scenario:
+  name: Sampled benign data
+  description: 'This scenario uses the same data as the full benign scenario, but
+    only a
+
+    fraction of it. This is useful for testing the performance of the system
+
+    on a smaller dataset.
+
+    '

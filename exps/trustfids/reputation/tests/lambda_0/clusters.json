@@ -1,0 +1,30 @@
+[
+    [
+        "client_004",
+        "client_000",
+        "client_002",
+        "client_003",
+        "client_001"
+    ],
+    [
+        "attacker_000",
+        "client_013",
+        "client_011",
+        "client_012",
+        "client_010"
+    ],
+    [
+        "client_017",
+        "client_014",
+        "client_015",
+        "client_018",
+        "client_016"
+    ],
+    [
+        "client_008",
+        "client_009",
+        "client_007",
+        "client_005",
+        "client_006"
+    ]
+]

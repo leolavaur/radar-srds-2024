@@ -1,0 +1,6 @@
+- archi=fedavg
+- scenario/distribution=lone
+- +scenario/target=untargeted
+- scenario/attacker=stealth0.7
+- xp.seed=56
+- fl.drop_class=False

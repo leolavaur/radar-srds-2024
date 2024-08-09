@@ -1,0 +1,9 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: botiot
+      clients: 
+        benign: 4
+        malicious: 6
+

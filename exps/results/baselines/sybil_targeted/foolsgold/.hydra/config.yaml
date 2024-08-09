@@ -1,0 +1,60 @@
+fl:
+  num_clients: 12
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  silos:
+  - path: ../data/sampled/botiot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/nb15_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/toniot_sampled.csv.gz
+    type: benign
+  - path: ../data/sampled/targeted/cicids_sampled_benign.csv.gz
+    type: benign
+  - path: ../data/sampled/targeted/cicids_sampled_attacked.csv.gz
+    type: malicious
+  distribution:
+  - 2
+  - 3
+  - 2
+  - 2
+  - 3
+client:
+  val_ratio: 0.1
+  _target_: trustfids.client.client.FIDSClient
+  with_efc: false
+xp:
+  seed: 1138
+  save: false
+hardware:
+  cpu_headroom: 0.1
+strategy:
+  _target_: trustfids.server.strategy.SimFoolsGold
+  initial_parameters: null
+  num_epochs: ${fl.num_epochs}
+  batch_size: ${fl.batch_size}
+baseline:
+  name: FoolsGold
+  description: 'This baseline implements the FoolsGold algorithm, as described in
+    [1], with the same
+
+    local algorithm as the Trust-FIDS baseline. It is used as a baseline for comparison
+
+    with Trust-FIDS on their resiliency to adversarial attacks.
+
+
+    [1] C. Fung, C. J. M. Yoon, and I. Beschastnikh, “The limitations of federated
+
+    learning in sybil settings,” in 23rd international symposium on research in attacks,
+
+    intrusions and defenses (RAID 2020), San Sebastian, Oct. 2020, pp. 301–316. [Online].
+
+    Available: https://www.usenix.org/conference/raid2020/presentation/fung
+
+    '
+scenario:
+  name: One targeted attacker
+  datasize: sampled
+  description: "This scenario considers that multiple coordinated attackers are targeting\
+    \ a specific\nattack in their dataset. \n"

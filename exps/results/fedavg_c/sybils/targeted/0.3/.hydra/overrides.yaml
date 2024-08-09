@@ -1,0 +1,6 @@
+- archi=fedavg
+- scenario/distribution=/single_cluster/sybils_maj_botiot
+- +scenario/target=targeted_reconnaissance
+- scenario/attacker=stealth0.3
+- xp.seed=56
+- fl.drop_class=False

@@ -1,0 +1,11 @@
+# @package _global_
+
+baseline: 
+  name: FedNoAgg
+
+
+defaults:
+  - /archi/strategy: fednoagg
+  - /archi/server: flowerserver
+  - /archi/client: idsclient
+  - _self_

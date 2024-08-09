@@ -1,0 +1,3 @@
+- archi.strategy.clustering_kwargs.threshold_type=fixed
+- archi.strategy.clustering_kwargs.alpha=0.1
+- archi.strategy.clustering_kwargs.distance_type=cosin_sim

@@ -1,0 +1,65 @@
+fl:
+  num_rounds: 10
+  num_epochs: 10
+  batch_size: 128
+  drop_class: false
+  drop_different_classes: true
+  drop_all_class_but_one: false
+  drop_class_nb: 1
+  silos:
+  - dataset: cicids
+    clients: 5
+  - dataset: toniot
+    clients: 5
+  - dataset: botiot
+    clients: 2/3
+  - dataset: nb15
+    clients: 5
+attacker:
+  poison_eval: true
+  poisoning: '0.2'
+  target: null
+xp:
+  seed: 56
+  save: false
+hardware:
+  auto: true
+  cpu_headroom: 0.1
+dataset:
+  load_data:
+    _target_: trustfids.dataset.nfv2.load_data
+    base_path: ../data/sampled/
+    test_ratio: 0.2
+    common_test: true
+learner:
+  _target_: trustfids.client.learners.MLPPopoola.remote
+archi:
+  strategy:
+    _target_: trustfids.server.strategy.PersistantFedAvg
+    initial_parameters: null
+    num_epochs: ${fl.num_epochs}
+    batch_size: ${fl.batch_size}
+  server:
+    _target_: flwr.server.Server
+  client:
+    _target_: trustfids.client.IDSClient
+baseline:
+  name: FedAvg
+  description: 'This configuration implements the FedAvg algorithm, as described in
+    [1]. It uses the
+
+    default client, with a modified FedAvg strategy: SimFedAvg.
+
+
+    [1] B. McMahan, E. Moore, D. Ramage, S. Hampson, et B. A. y Arcas,
+
+    « Communication-efficient learning of deep networks from decentralized data »,
+    in
+
+    Proceedings of the 20th international conference on artificial intelligence and
+
+    statistics, avr. 2017. Disponible sur:
+
+    https://proceedings.mlr.press/v54/mcmahan17a.html
+
+    '

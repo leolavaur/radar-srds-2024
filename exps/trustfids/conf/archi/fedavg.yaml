@@ -1,0 +1,20 @@
+# @package _global_
+
+baseline: 
+  name: FedAvg
+
+  description: |
+    This configuration implements the FedAvg algorithm, as described in [1]. It uses the
+    default client, with a modified FedAvg strategy: SimFedAvg.
+    
+    [1] B. McMahan, E. Moore, D. Ramage, S. Hampson, et B. A. y Arcas,
+    « Communication-efficient learning of deep networks from decentralized data », in
+    Proceedings of the 20th international conference on artificial intelligence and
+    statistics, avr. 2017. Disponible sur:
+    https://proceedings.mlr.press/v54/mcmahan17a.html
+
+defaults:
+  - /archi/strategy: fedavg
+  - /archi/server: flowerserver
+  - /archi/client: idsclient
+  - _self_

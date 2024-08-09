@@ -1,0 +1,5 @@
+- archi=fedavg
+- scenario/distribution=/single_cluster/sybils_min_botiot
+- +scenario/target=targeted_reconnaissance
+- xp.seed=56
+- fl.drop_class=False

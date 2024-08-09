@@ -1,0 +1,11 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: toniot
+      clients: 7/6
+  
+attacker:
+  poison_eval: True
+  target: [ "xss" ]
+  

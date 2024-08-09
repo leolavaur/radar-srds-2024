@@ -1,0 +1,9 @@
+# NFV2 reduced dataset.
+
+load_data:
+  _target_: "trustfids.dataset.nfv2.load_data"
+
+  base_path: ../data/reduced/
+  test_ratio: 0.2
+  common_test: true
+

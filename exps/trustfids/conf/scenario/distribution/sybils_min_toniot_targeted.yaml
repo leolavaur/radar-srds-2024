@@ -1,0 +1,18 @@
+# @package _global_
+
+fl:
+  silos:
+    - dataset: cicids
+      clients: 5
+    - dataset: toniot
+      clients:
+        malicious: 3
+        benign: 2
+    - dataset: botiot
+      clients: 5
+    - dataset: nb15
+      clients: 5
+
+attacker:
+  target: [ "xss" ]
+  poison_eval: True

@@ -1,0 +1,31 @@
+# @package _global_
+
+baseline:
+  name: Popoola local
+  description: |
+    This baseline implements the work of Popoola et al. (2021) [1]. Some choices have been
+    made to make the baselines comparable:
+    
+    - We simply implement the local model architecture, as its evaluation in the paper
+    suggests good performance on each dataset. The local training is done with Adam and
+    a learning rate of 0.0001, as suggested by the authors.
+
+    [1] S. I. Popoola, G. Gui, B. Adebisi, M. Hammoudeh, and H. Gacanin, “Federated Deep
+    Learning for Collaborative Intrusion Detection in Heterogeneous Networks,” in 2021
+    IEEE 94th Vehicular Technology Conference (VTC2021-Fall), Sep. 2021, pp. 1–6. doi:
+    10.1109/VTC2021-Fall52928.2021.9625505. 
+
+
+
+fl:
+  efc: true
+
+data:
+  with_efc: true
+  
+defaults:
+  - /archi: fedavg
+  - /learner: ae
+  - /dataset: nfv2_benign
+  - _self_
+
